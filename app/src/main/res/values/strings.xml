@@ -53,7 +53,7 @@
 	<string name="slctr_cntxt_request_info">Запросить информацию</string>
 	<string name="slctr_cntxt_edit_notes">Редактировать заметки</string>
 	<string name="slctr_cntxt_remove_city">Удалить город из списка</string>
-	<string formatted="false" name="slctr_cntxt_coords_template">at %3.3f, %3.3f</string>
+	<string formatted="false" name="slctr_cntxt_coords_template">с координатами %3.3f, %3.3f</string>
 
 	<string name="picker_unresolved_country">Неизвестная страна</string>
 	<string name="picker_unresolved_city">Неизвестный город</string>
