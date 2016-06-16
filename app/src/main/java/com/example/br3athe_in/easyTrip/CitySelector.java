@@ -173,19 +173,21 @@ public class CitySelector extends AppCompatActivity {
 				reloadAdapter(citiesSelected);
 				Log.d(LOG_TAG, "City added at " + latLng.toString());
 
-				Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+				Geocoder geocoder = new Geocoder(this, Locale.US);
 				try {
-					List<Address> la = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 10);
-					//la.get(0).get
+					// TODO: 16.06.2016 Get it working.
+					//List<Address> la = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+					List<Address> la = geocoder.getFromLocationName("1600 Amphitheatre Parkway, Mountain View, CA", 1);
+					Log.d(LOG_TAG, la.get(0).getLatitude() + ", " + la.get(0).getLongitude());
 				} catch (IOException e) {
 					e.printStackTrace();
-					Toast.makeText(this, "Ivan! " + e.getMessage(), Toast.LENGTH_SHORT).show();
+					Toast.makeText(this, "Geocoding Ivan! " + e.getMessage(), Toast.LENGTH_SHORT).show();
 				}
 				break;
 			case PLACE_PICKER_RQ:
 				if (resultCode == RESULT_OK) {
 					final Place place = PlacePicker.getPlace(this, data);
-
+					
 					Log.d(LOG_TAG, place.getAddress().toString() + place.getRating());
 				}
 				break;

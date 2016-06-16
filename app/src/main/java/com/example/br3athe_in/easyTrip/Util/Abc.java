@@ -1,4 +1,4 @@
-package com.example.br3athe_in.easyTrip;
+package com.example.br3athe_in.easyTrip.Util;
 
 import java.util.ArrayList;
 import java.util.Collections;
