@@ -4,28 +4,36 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.TileOverlay;
 
-public class CityPicker extends FragmentActivity implements OnMapReadyCallback {
+import java.io.IOException;
+import java.util.Locale;
+
+public class CityPicker extends FragmentActivity implements OnMapReadyCallback, IntentionExtraKeys {
 
 	private static final String LOG_TAG = "Custom";
+	private static final double INITIAL_LATITUDE = 50.44847278765969;
+	private static final double INITIAL_LONGITUDE = 30.52297968417406;
+	private static final LatLng INITIAL_POS = new LatLng(INITIAL_LATITUDE, INITIAL_LONGITUDE);
 	private GoogleMap mMap;
-	private Location myLocation;
-	private int mc = 0;
+	private Marker markedLocation;
+	private Address lastResolvedAddress = new Address(Locale.getDefault());
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +57,8 @@ public class CityPicker extends FragmentActivity implements OnMapReadyCallback {
 	 */
 	@Override
 	public void onMapReady(GoogleMap googleMap) {
+		// Log.d(LOG_TAG, "Map loaded correctly with key " + getString(R.string.google_maps_key));
+		// "D/Custom: Map loaded correctly with key YOUR_KEY_HERE". wtf?
 		mMap = googleMap;
 
 		// TODO: Consider calling
@@ -66,32 +76,81 @@ public class CityPicker extends FragmentActivity implements OnMapReadyCallback {
 
 			return;
 		}
+
 		mMap.setMyLocationEnabled(true);
 
-		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-						new LatLng(50.44847278765969, 30.52297968417406),
-						17)); // dafuq, Google
-		mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+		lastResolvedAddress.setLocality("Киев");
+		lastResolvedAddress.setCountryName("Украина");
+		lastResolvedAddress.setLatitude(INITIAL_LATITUDE);
+		lastResolvedAddress.setLongitude(INITIAL_LONGITUDE);
+
+		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(INITIAL_POS, 13)); // dafuq, Google
+		markedLocation = mMap.addMarker(new MarkerOptions()
+						.position(INITIAL_POS)
+						.title("Киев")
+						.snippet("Украина")
+						.draggable(true));
+		markedLocation.showInfoWindow();
+
+		mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 			@Override
-			public void onMapLongClick(LatLng latLng) {
+			public void onMapClick(LatLng latLng) {
 				// TODO: 30.05.2016 extract confirmation to this listener via context menu
-				++mc;
-				mMap.addMarker(new MarkerOptions()
+
+				float[] bearing = new float[] {0};
+				Location.distanceBetween(
+								markedLocation.getPosition().latitude, markedLocation.getPosition().longitude,
+								latLng.latitude, latLng.longitude, bearing
+				);
+
+				if (bearing[0] >= 3000) {
+					resolveAddress(latLng);
+				}
+				markedLocation.remove();
+				markedLocation = mMap.addMarker(new MarkerOptions()
 								.position(latLng)
-								.title("Marker " + mc)
-								.snippet("no snippet lel"));
-				Log.d(
-								LOG_TAG,
-								String.format("Marker %d - coordinates: %s, zoom: %f",
-												mc, latLng.toString(), mMap.getCameraPosition().zoom));
+								.title(lastResolvedAddress.getLocality())
+								.snippet(lastResolvedAddress.getCountryName())
+								.draggable(true)
+				);
+				markedLocation.showInfoWindow();
 			}
 		});
 	}
 
 	public void commit(View view) {
 		Intent answer = getIntent();
-		answer.putExtra("chosen", mMap.getCameraPosition().target);
 		setResult(RESULT_OK, answer);
+
+		resolveAddress(markedLocation.getPosition());
+
+		answer.putExtra(EXTRA_COORDINATES, markedLocation.getPosition());
+		answer.putExtra(
+						EXTRA_VERBOSE_LOCATION,
+						lastResolvedAddress.getLocality() + ", " + lastResolvedAddress.getCountryName());
+
 		finish();
+	}
+
+	/** This transforms a place's coordinates into verbal address
+	 * and then sets it to <code>lastResolvedAddress</code>.
+	 * Uses <code>Geocoder</code>, so consider minimizing calls count.
+	 */
+	private void resolveAddress(LatLng cPos) {
+		Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+		Address selected = new Address(Locale.getDefault());
+		selected.setCountryName(getString(R.string.picker_unresolved_country));
+		selected.setLocality(getString(R.string.picker_unresolved_city));
+		try {
+			selected = geocoder.getFromLocation(cPos.latitude, cPos.longitude, 1).get(0);
+			Log.d(LOG_TAG,
+							"Reverse geocoding executed, found " + selected.getLocality()
+											+ ", " + selected.getCountryName()
+											+ " at " + selected.getLatitude() + ", " + selected.getLongitude());
+		} catch (IOException e) {
+			Log.e(LOG_TAG, "An I/O exception occured", e);
+			Toast.makeText(this, "Geocoding error. " + e.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+		lastResolvedAddress = selected;
 	}
 }

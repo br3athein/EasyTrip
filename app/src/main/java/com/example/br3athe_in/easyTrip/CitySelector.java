@@ -2,8 +2,6 @@ package com.example.br3athe_in.easyTrip;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.location.Address;
-import android.location.Geocoder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,13 +21,11 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
-public class CitySelector extends AppCompatActivity {
+public class CitySelector extends AppCompatActivity implements IntentionExtraKeys {
 
 	private static final String LOG_TAG = "Custom";
 	private static final int ASK_FOR_CITY = 1337;
@@ -162,27 +158,18 @@ public class CitySelector extends AppCompatActivity {
 		switch (requestCode) {
 			case ASK_FOR_CITY:
 				if(resultCode == RESULT_CANCELED) { return; }
-				LatLng latLng = (LatLng) data.getExtras().get("chosen");
+				LatLng newCityCoords = (LatLng) data.getExtras().get(EXTRA_COORDINATES);
+				String newCityName = data.getStringExtra(EXTRA_VERBOSE_LOCATION);
+
 				incomingCity = new HashMap<>();
-				// TODO: put some city name maybe? May require Places though.
-				incomingCity.put(FIELD_1, "Placeholder " + ++addedNow);
-				// TODO: redundant?
+				incomingCity.put(FIELD_1, newCityName);
 				incomingCity.put(FIELD_2,
-								String.format(Locale.US, "at %3.3f, %3.3f", latLng.latitude, latLng.longitude));
+								String.format(Locale.US, getString(R.string.slctr_cntxt_coords_template),
+												newCityCoords.latitude, newCityCoords.longitude));
 				citiesSelected.add(citiesSelected.size() - 1, incomingCity);
 				reloadAdapter(citiesSelected);
-				Log.d(LOG_TAG, "City added at " + latLng.toString());
+				Log.d(LOG_TAG, "City added at " + newCityCoords.toString());
 
-				Geocoder geocoder = new Geocoder(this, Locale.US);
-				try {
-					// TODO: 16.06.2016 Get it working.
-					//List<Address> la = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-					List<Address> la = geocoder.getFromLocationName("1600 Amphitheatre Parkway, Mountain View, CA", 1);
-					Log.d(LOG_TAG, la.get(0).getLatitude() + ", " + la.get(0).getLongitude());
-				} catch (IOException e) {
-					e.printStackTrace();
-					Toast.makeText(this, "Geocoding Ivan! " + e.getMessage(), Toast.LENGTH_SHORT).show();
-				}
 				break;
 			case PLACE_PICKER_RQ:
 				if (resultCode == RESULT_OK) {
