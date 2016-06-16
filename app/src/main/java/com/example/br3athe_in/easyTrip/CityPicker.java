@@ -42,7 +42,7 @@ public class CityPicker extends FragmentActivity implements OnMapReadyCallback, 
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		// Obtain the SupportMapFragment and get notified when the map is ready to be used.
 		SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-						.findFragmentById(R.id.map);
+				.findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this);
 	}
 
@@ -70,9 +70,9 @@ public class CityPicker extends FragmentActivity implements OnMapReadyCallback, 
 		// for ActivityCompat#requestPermissions for more details.
 		// SecurityException is very possible to occur
 		if (ActivityCompat.checkSelfPermission(
-						this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-						&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-						!= PackageManager.PERMISSION_GRANTED) {
+				this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+				&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+				!= PackageManager.PERMISSION_GRANTED) {
 
 			return;
 		}
@@ -86,10 +86,10 @@ public class CityPicker extends FragmentActivity implements OnMapReadyCallback, 
 
 		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(INITIAL_POS, 13)); // dafuq, Google
 		markedLocation = mMap.addMarker(new MarkerOptions()
-						.position(INITIAL_POS)
-						.title("Киев")
-						.snippet("Украина")
-						.draggable(true));
+				.position(INITIAL_POS)
+				.title("Киев")
+				.snippet("Украина")
+				.draggable(true));
 		markedLocation.showInfoWindow();
 
 		mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -99,8 +99,8 @@ public class CityPicker extends FragmentActivity implements OnMapReadyCallback, 
 
 				float[] bearing = new float[] {0};
 				Location.distanceBetween(
-								markedLocation.getPosition().latitude, markedLocation.getPosition().longitude,
-								latLng.latitude, latLng.longitude, bearing
+						markedLocation.getPosition().latitude, markedLocation.getPosition().longitude,
+						latLng.latitude, latLng.longitude, bearing
 				);
 
 				if (bearing[0] >= 3000) {
@@ -108,10 +108,10 @@ public class CityPicker extends FragmentActivity implements OnMapReadyCallback, 
 				}
 				markedLocation.remove();
 				markedLocation = mMap.addMarker(new MarkerOptions()
-								.position(latLng)
-								.title(lastResolvedAddress.getLocality())
-								.snippet(lastResolvedAddress.getCountryName())
-								.draggable(true)
+						.position(latLng)
+						.title(lastResolvedAddress.getLocality())
+						.snippet(lastResolvedAddress.getCountryName())
+						.draggable(true)
 				);
 				markedLocation.showInfoWindow();
 			}
@@ -126,8 +126,8 @@ public class CityPicker extends FragmentActivity implements OnMapReadyCallback, 
 
 		answer.putExtra(EXTRA_COORDINATES, markedLocation.getPosition());
 		answer.putExtra(
-						EXTRA_VERBOSE_LOCATION,
-						lastResolvedAddress.getLocality() + ", " + lastResolvedAddress.getCountryName());
+				EXTRA_VERBOSE_LOCATION,
+				lastResolvedAddress.getLocality() + ", " + lastResolvedAddress.getCountryName());
 
 		finish();
 	}
@@ -144,9 +144,9 @@ public class CityPicker extends FragmentActivity implements OnMapReadyCallback, 
 		try {
 			selected = geocoder.getFromLocation(cPos.latitude, cPos.longitude, 1).get(0);
 			Log.d(LOG_TAG,
-							"Reverse geocoding executed, found " + selected.getLocality()
-											+ ", " + selected.getCountryName()
-											+ " at " + selected.getLatitude() + ", " + selected.getLongitude());
+					"Reverse geocoding executed, found " + selected.getLocality()
+							+ ", " + selected.getCountryName()
+							+ " at " + selected.getLatitude() + ", " + selected.getLongitude());
 		} catch (IOException e) {
 			Log.e(LOG_TAG, "An I/O exception occured", e);
 			Toast.makeText(this, "Geocoding error. " + e.getMessage(), Toast.LENGTH_SHORT).show();

@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 			@Override
 			public void onClick(View view) {
 				Snackbar.make(view, "Easy 2 trip, hard 2 debug, mate.", Snackbar.LENGTH_LONG)
-								.setAction("Action", null).show();
+						.setAction("Action", null).show();
 			}
 		});
 

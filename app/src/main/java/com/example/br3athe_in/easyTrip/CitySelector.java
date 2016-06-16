@@ -94,9 +94,9 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 		// end debug
 
 		SimpleAdapter adapter = new SimpleAdapter(this, citiesSelected,
-						android.R.layout.simple_list_item_2,
-						new String[] {FIELD_1, FIELD_2},
-						new int[] {android.R.id.text1, android.R.id.text2}
+				android.R.layout.simple_list_item_2,
+				new String[] {FIELD_1, FIELD_2},
+				new int[] {android.R.id.text1, android.R.id.text2}
 		);
 
 		lv.setAdapter(adapter);
@@ -126,7 +126,7 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 	public boolean onContextItemSelected(MenuItem item) {
 		// TODO: put some actions, bruh!
 		AdapterView.AdapterContextMenuInfo menuInfo =
-						(AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+				(AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
 		switch (item.getItemId()) {
 			case ACTION_SHOW_MAP:
@@ -164,8 +164,8 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 				incomingCity = new HashMap<>();
 				incomingCity.put(FIELD_1, newCityName);
 				incomingCity.put(FIELD_2,
-								String.format(Locale.US, getString(R.string.slctr_cntxt_coords_template),
-												newCityCoords.latitude, newCityCoords.longitude));
+						String.format(Locale.US, getString(R.string.slctr_cntxt_coords_template),
+								newCityCoords.latitude, newCityCoords.longitude));
 				citiesSelected.add(citiesSelected.size() - 1, incomingCity);
 				reloadAdapter(citiesSelected);
 				Log.d(LOG_TAG, "City added at " + newCityCoords.toString());
@@ -187,9 +187,9 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 	 */
 	private void reloadAdapter(ArrayList<HashMap<String, String>> to) {
 		SimpleAdapter newAdapter = new SimpleAdapter(this, to,
-						android.R.layout.simple_list_item_2,
-						new String[] {FIELD_1, FIELD_2},
-						new int[] {android.R.id.text1, android.R.id.text2}
+				android.R.layout.simple_list_item_2,
+				new String[] {FIELD_1, FIELD_2},
+				new int[] {android.R.id.text1, android.R.id.text2}
 		);
 		newAdapter.getItem(newAdapter.getCount() - 1);
 		lv.setAdapter(newAdapter);
@@ -204,8 +204,8 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 		}
 
 		Toast.makeText(
-						this, "This should optimize your input. But it's not time yet!", Toast.LENGTH_LONG)
-						.show();
+				this, "This should optimize your input. But it's not time yet!", Toast.LENGTH_LONG)
+				.show();
 	}
 
 	private void getInfo(View view) {
