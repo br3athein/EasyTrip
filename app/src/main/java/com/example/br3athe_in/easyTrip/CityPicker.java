@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.TileOverlay;
 
 public class CityPicker extends FragmentActivity implements OnMapReadyCallback {
 
+	private static final String LOG_TAG = "Custom";
 	private GoogleMap mMap;
 	private Location myLocation;
 	private int mc = 0;
@@ -70,7 +71,6 @@ public class CityPicker extends FragmentActivity implements OnMapReadyCallback {
 		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
 						new LatLng(50.44847278765969, 30.52297968417406),
 						17)); // dafuq, Google
-		// mMap.
 		mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
 			@Override
 			public void onMapLongClick(LatLng latLng) {
@@ -80,7 +80,10 @@ public class CityPicker extends FragmentActivity implements OnMapReadyCallback {
 								.position(latLng)
 								.title("Marker " + mc)
 								.snippet("no snippet lel"));
-				Log.d("Custom", String.format("Marker %d - coordinates: %s, zoom: %f", mc, latLng.toString(), mMap.getCameraPosition().zoom));
+				Log.d(
+								LOG_TAG,
+								String.format("Marker %d - coordinates: %s, zoom: %f",
+												mc, latLng.toString(), mMap.getCameraPosition().zoom));
 			}
 		});
 	}

@@ -37,7 +37,6 @@
 						 You can define the keys for the debug and release targets in src/debug/ and src/release/.
 				-->
 
-
 	  <!--
 				Alternative name for backward compatibility:
 				android:name:"com.google.android.maps.v2.API_KEY"
@@ -53,11 +52,10 @@
 	    	android:name="android.support.PARENT_ACTIVITY"
 	    	android:value="com.example.br3athe_in.easyTrip.CitySelector"/>
 	  </activity>
-	  <activity android:name=".Blank">
-	  </activity>
-		<service
+		<!--not likely to do something at all-->
+		<!--service
 				android:name=".FetchAddressIntentService"
-				android:exported="false"/>
+				android:exported="false"/-->
 	</application>
 
 </manifest>

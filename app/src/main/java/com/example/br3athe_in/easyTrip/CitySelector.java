@@ -31,8 +31,8 @@ import java.util.Locale;
 
 public class CitySelector extends AppCompatActivity {
 
-	public static final String LOG_TAG = "Custom";
-	public static final int ASK_FOR_CITY = 1337;
+	private static final String LOG_TAG = "Custom";
+	private static final int ASK_FOR_CITY = 1337;
 	private static final String FIELD_1 = "latitude";
 	private static final String FIELD_2 = "longitude";
 	private static final int ACTION_SHOW_MAP = 1;
@@ -42,15 +42,10 @@ public class CitySelector extends AppCompatActivity {
 	private static final int PLACE_PICKER_RQ = 42;
 	private HashMap<String, String> incomingCity;
 
-	//private final HashMap<String, String> addCity = new HashMap<>().put(FIELD_1, "f1");
-
-	//PlacePicker pp = new PlacePicker();
-	//int addCityFingerprint
-
 	private int addedNow = 0;
 	// TODO: 29.05.2016 refactor, ffs
-	ListView lv;
-	Button btn;
+	private ListView lv;
+	private Button btn;
 	private ArrayList<HashMap<String, String>> citiesSelected = new ArrayList<>();
 
 	@Override
@@ -60,7 +55,6 @@ public class CitySelector extends AppCompatActivity {
 		setContentView(R.layout.activity_city_selector);
 		loadViews();
 		lv.setChoiceMode(ListView.CHOICE_MODE_NONE);
-		//?lv.setClickable(true);
 
 		lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -83,8 +77,6 @@ public class CitySelector extends AppCompatActivity {
 		incomingCity = new HashMap<>();
 		incomingCity.put(FIELD_1, getResources().getString(R.string.cs_last_list_item_1));
 		incomingCity.put(FIELD_2, getResources().getString(R.string.cs_last_list_item_2));
-
-		incomingCity.hashCode();
 
 		citiesSelected.add(incomingCity);
 		// end release
@@ -121,7 +113,7 @@ public class CitySelector extends AppCompatActivity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 		// ListView locLv = (ListView) v;
-		//lv.getAdapter().getItem(lv.getAdapter().getCount()).equals()
+		// lv.getAdapter().getItem(lv.getAdapter().getCount()).equals()
 		if (true) {
 			super.onCreateContextMenu(menu, v, menuInfo);
 			// TODO! Change to extracted city's name.
@@ -179,7 +171,7 @@ public class CitySelector extends AppCompatActivity {
 								String.format(Locale.US, "at %3.3f, %3.3f", latLng.latitude, latLng.longitude));
 				citiesSelected.add(citiesSelected.size() - 1, incomingCity);
 				reloadAdapter(citiesSelected);
-				Log.d("Custom", "City added at " + latLng.toString());
+				Log.d(LOG_TAG, "City added at " + latLng.toString());
 
 				Geocoder geocoder = new Geocoder(this, Locale.getDefault());
 				try {
@@ -227,6 +219,6 @@ public class CitySelector extends AppCompatActivity {
 						.show();
 	}
 
-	public void getInfo(View view) {
+	private void getInfo(View view) {
 	}
 }
