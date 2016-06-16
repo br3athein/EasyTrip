@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.br3athe_in.easyTrip.MainActivity"
+    tools:showIn="@layout/activity_city_selector"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp">
+
+    <ListView
+        android:layout_width="368dp"
+        android:layout_height="431dp"
+        android:clipToPadding="false"
+        android:scrollbarStyle="outsideOverlay"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="72dp"
+        android:id="@+id/citiesSelected"
+
+        app:layout_constraintTop_toBottomOf="@+id/cs_button"
+        tools:layout_constraintTop_creator="0"
+
+        app:layout_constraintLeft_toLeftOf="@layout/content_city_selector"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_creator="0"
+
+        app:layout_constraintBottom_toBottomOf="@layout/content_city_selector"
+        tools:layout_constraintBottom_creator="0">
+
+    </ListView>
+
+    <Button
+        android:text="@string/cs_return"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="16dp"
+        android:id="@+id/cs_button"
+        android:onClick="getCont"
+
+        app:layout_constraintLeft_toLeftOf="@+id/content_main"
+        android:layout_marginStart="16dp"
+        tools:layout_constraintLeft_creator="0"
+
+        app:layout_constraintTop_toTopOf="@+id/content_main"
+        android:layout_marginTop="16dp"
+        tools:layout_constraintTop_creator="0"
+
+        app:layout_constraintHorizontal_bias="0.07"/>
+
+</android.support.constraint.ConstraintLayout>

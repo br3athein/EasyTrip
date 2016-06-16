@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/content_main"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	app:layout_behavior="@string/appbar_scrolling_view_behavior"
+	tools:context="com.example.br3athe_in.easyTrip.MainActivity"
+	tools:showIn="@layout/activity_main"
+	tools:layout_editor_absoluteX="0dp"
+	tools:layout_editor_absoluteY="0dp">
+
+	<TextView
+		android:text="@string/main_greeting"
+		android:textAlignment="center"
+		android:gravity="bottom"
+		android:padding="10dp"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		tools:layout_editor_absoluteX="33dp"
+		tools:layout_editor_absoluteY="20dp"
+		android:id="@+id/twTitle"
+		app:layout_constraintLeft_toLeftOf="@+id/content_main"
+		tools:layout_constraintLeft_creator="0"
+		app:layout_constraintTop_toTopOf="@+id/content_main"
+		android:layout_marginTop="20dp"
+		tools:layout_constraintTop_creator="0"
+		app:layout_constraintRight_toRightOf="@+id/content_main"
+		tools:layout_constraintRight_creator="0"/>
+
+	<Button
+	 	android:text="@string/main_generate_travel"
+	 	android:layout_width="249dp"
+	 	android:layout_height="73dp"
+		android:padding="3dp"
+	 	tools:layout_editor_absoluteX="72dp"
+	 	tools:layout_editor_absoluteY="96dp"
+	 	android:id="@+id/generateTravel"
+	 	android:onClick="openCreateTravelMenu"
+	 	app:layout_constraintLeft_toLeftOf="@+id/content_main"
+	 	android:layout_marginStart="16dp"
+	 	tools:layout_constraintLeft_creator="0"
+	 	app:layout_constraintTop_toTopOf="@+id/content_main"
+	 	android:layout_marginTop="96dp"
+	 	tools:layout_constraintTop_creator="0"
+	 	app:layout_constraintRight_toRightOf="@+id/content_main"
+	 	android:layout_marginEnd="16dp"
+	 	tools:layout_constraintRight_creator="0"/>
+
+	<Button
+	 	android:text="@string/main_lookup"
+	 	android:layout_width="249dp"
+	 	android:layout_height="73dp"
+		android:padding="3dp"
+	 	tools:layout_editor_absoluteX="72dp"
+	 	tools:layout_editor_absoluteY="200dp"
+	 	android:id="@+id/travelLookup"
+	 	app:layout_constraintLeft_toLeftOf="@+id/content_main"
+	 	tools:layout_constraintLeft_creator="0"
+	 	app:layout_constraintTop_toTopOf="@+id/content_main"
+	 	android:layout_marginTop="200dp"
+	 	tools:layout_constraintTop_creator="0"
+	 	app:layout_constraintRight_toRightOf="@+id/content_main"
+	 	tools:layout_constraintRight_creator="0"/>
+
+	<Button
+		android:text="@string/main_followMe"
+		android:layout_width="249dp"
+		android:layout_height="73dp"
+		android:padding="3dp"
+		tools:layout_editor_absoluteX="72dp"
+		tools:layout_editor_absoluteY="304dp"
+		android:id="@+id/followMe"
+		app:layout_constraintLeft_toLeftOf="@+id/content_main"
+		android:layout_marginStart="16dp"
+		tools:layout_constraintLeft_creator="0"
+		app:layout_constraintTop_toTopOf="@+id/content_main"
+		android:layout_marginTop="304dp"
+		tools:layout_constraintTop_creator="0"
+		app:layout_constraintRight_toRightOf="@+id/content_main"
+		android:layout_marginEnd="16dp"
+		tools:layout_constraintRight_creator="0"/>
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,57 @@
+<resources>
+	<string name="app_name">Easy Trip</string>
+	<string name="action_settings">Settings</string>
+	<string name="main_greeting">Добро пожаловать в Easy Trip!\n
+	Выберите одну из опций, чтобы продолжить…</string>
+	<string name="main_generate_travel">Создать путешествие!</string>
+	<string name="main_lookup">Просмотреть существующие путешествия</string>
+	<string name="main_followMe">Отправиться в путешествие!</string>
+
+	<string name="title_activity_create_travel_menu">Создайте новое путешествие</string>
+
+	<string name="cs_return">Button</string>
+	<string name="cs_commit">Подтвердить выбор!</string>
+
+	<string-array name="testArray">
+		<item>Иван</item>
+		<item>Марья</item>
+		<item>Петр</item>
+		<item>Антон</item>
+		<item>Даша</item>
+		<item>Борис</item>
+		<item>Костя</item>
+		<item>Игорь</item>
+		<item>Анна</item>
+		<item>Денис</item>
+		<item>Вадим</item>
+		<item>Ольга</item>
+		<item>Сергей</item>
+		<item>Добавить город, лел</item>
+	</string-array>
+
+	<string-array name="cs_initial1">
+		<item>Киев</item>
+		<item>Мадрид</item>
+		<item>Париж</item>
+		<item>Вена</item>
+	</string-array>
+
+	<string-array name="cs_initial2">
+		<item>at 50,277 – 30,523</item>
+		<item>at 40,426 – 3,692</item>
+		<item>at 48,838 – 30,523</item>
+		<item>at 50,277 – 2,309</item>
+	</string-array>
+
+	<string name="cs_last_list_item_1">Добавить город…</string>
+	<string name="cs_last_list_item_2">Коснитесь элемента списка</string>
+
+	<string name="title_activity_city_picker">Easy Trip</string>
+
+	<string name="commit_city_pick">Подтвердить выбор</string>
+	<string name="slctr_cntxt_show_map">Показать на карте</string>
+	<string name="slctr_cntxt_request_info">Запросить информацию</string>
+	<string name="slctr_cntxt_edit_notes">Редактировать заметки</string>
+	<string name="slctr_cntxt_remove_city">Удалить город из списка</string>
+
+</resources>
