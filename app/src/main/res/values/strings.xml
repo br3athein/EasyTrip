@@ -57,5 +57,10 @@
 
 	<string name="picker_unresolved_country">Неизвестная страна</string>
 	<string name="picker_unresolved_city">Неизвестный город</string>
+	<string name="picker_remove_prompt_title">Удалить выбранный город?</string>
+	<string name="prompt_positive">Да</string>
+	<string name="prompt_negative">Нет</string>
+	<string name="placeholder_city_unknown">Неизвестный город</string>
+	<string name="placeholder_country_unknown">Неизвестная страна</string>
 
 </resources>
