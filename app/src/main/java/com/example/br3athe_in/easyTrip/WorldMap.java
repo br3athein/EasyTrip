@@ -160,7 +160,6 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 								getString(R.string.prompt_negative),
 								null
 						)
-						.create()
 						.show();
 			}
 		});
@@ -178,7 +177,6 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 						.position(INITIAL_POS)
 						.title("Киев")
 						.snippet("Украина")
-						.flat(true)
 		);
 		markedLocations.add(initialMarker);
 		initialMarker.showInfoWindow();
@@ -217,7 +215,6 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 				.position(latLng)
 				.title(nullableCityName)
 				.snippet(nullableCountryName)
-				.flat(true)
 		);
 		marker.showInfoWindow();
 		markedLocations.add(marker);
@@ -234,7 +231,8 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 					m.getTitle(),
 					m.getSnippet(),
 					m.getPosition().latitude,
-					m.getPosition().longitude
+					m.getPosition().longitude,
+					this
 			));
 		}
 

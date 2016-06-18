@@ -52,17 +52,24 @@
 
 	<string name="slctr_cntxt_show_map">Показать на карте</string>
 	<string name="slctr_cntxt_request_info">Запросить информацию</string>
-	<string name="slctr_cntxt_edit_notes">Редактировать заметки</string>
+	<string name="slctr_cntxt_edit_notes">Показать заметки</string>
 	<string name="slctr_cntxt_remove_city">Удалить город из списка</string>
 	<string name="slctr_cntxt_coords_template" formatted="false">с координатами %3.3f, %3.3f</string>
 	<!-- unused -->
 	<string name="slctr_close_without_confirmation">Вы уверены, что хотите вернуться? Все несохранённые изменения будут утеряны!</string>
 
+	<string name="wmap_search_stub">Найти на карте…</string>
 	<string name="wmap_unresolved_country">Неизвестная страна</string>
 	<string name="wmap_unresolved_city">Неизвестный город</string>
 	<string name="wmap_remove_known_prompt_title" formatted="false">Удалить город %s из списка?</string>
 	<string name="wmap_remove_unknown_prompt_title">Удалить город из списка?</string>
 	<string name="wmap_guide">Для удаления города с карты нажмите и удерживайте всплывающую подсказку над ним.</string>
+
+	<string name="city_notes_stub">Заметок пока нет.</string>
+	<string name="city_edit_notes_prompt">Редактировать заметки</string>
+	<string name="city_close_notes_dialog">Закрыть диалог</string>
+	<string name="city_edit_notes_commit">Сохранить изменения</string>
+	<string name="city_edit_notes_decline">Выйти без изменений</string>
 
 	<!-- seems to be common -->
 	<string name="prompt_positive">Да</string>

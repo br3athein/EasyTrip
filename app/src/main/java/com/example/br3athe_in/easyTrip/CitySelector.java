@@ -27,7 +27,7 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 	private static final String LIST_ITEM_DETAILS = "COORDINATES";
 	private static final int ACTION_SHOW_ON_MAP = 1;
 	private static final int ACTION_REQUEST_INFO = 2;
-	private static final int ACTION_EDIT_NOTES = 3;
+	private static final int ACTION_SHOW_NOTES = 3;
 	private static final int ACTION_REMOVE_CITY = 4;
 
 	private ListView lv;
@@ -96,28 +96,27 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 
 		menu.add(Menu.NONE, ACTION_SHOW_ON_MAP, 1, R.string.slctr_cntxt_show_map);
 		menu.add(Menu.NONE, ACTION_REQUEST_INFO, 2, R.string.slctr_cntxt_request_info);
-		menu.add(Menu.NONE, ACTION_EDIT_NOTES, 3, R.string.slctr_cntxt_edit_notes);
+		menu.add(Menu.NONE, ACTION_SHOW_NOTES, 3, R.string.slctr_cntxt_edit_notes);
 		menu.add(Menu.NONE, ACTION_REMOVE_CITY, 4, R.string.slctr_cntxt_remove_city);
 	}
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterView.AdapterContextMenuInfo menuInfo =
-				(AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+		int selectedPosition = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).position;
 
 		switch (item.getItemId()) {
 			case ACTION_SHOW_ON_MAP:
-				jumpToMap(menuInfo.position);
+				jumpToMap(selectedPosition);
 				break;
 			case ACTION_REQUEST_INFO:
-				// noop
+				// noop? Awaiting implementation.
 				break;
-			case ACTION_EDIT_NOTES:
-				// TODO: integrate notes feature in City cls
+			case ACTION_SHOW_NOTES:
+				ctCitiesToVisit.get(selectedPosition).showNotes(this);
 				break;
 			case ACTION_REMOVE_CITY:
-				ctCitiesToVisit.remove(menuInfo.position);
-				lvFillContent.remove(menuInfo.position);
+				ctCitiesToVisit.remove(selectedPosition);
+				lvFillContent.remove(selectedPosition);
 				reloadAdapter(lvFillContent);
 				break;
 		}
@@ -132,7 +131,6 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 	 *  and sets camera position to specified city.
 	 *  @param focusToId id of the city that map should focus to.
 	 */
-
 	private void jumpToMap(int focusToId) {
 		Intent intent = new Intent(this, WorldMap.class);
 		intent.putExtra(EXTRA_CITIES_TO_VISIT, ctCitiesToVisit);
@@ -189,10 +187,14 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 		lv.setAdapter(newAdapter);
 	}
 
-	public void getCont(View view) {
+	public void createTravel(View view) {
 		Toast.makeText(
-				this, "This should optimize your input. But it's not time yet!", Toast.LENGTH_LONG)
-				.show();
+				this,
+				"This should optimize your input.\n" +
+						" Implementation is currently unavailable and is being under construction.",
+				Toast.LENGTH_LONG
+		)
+		.show();
 	}
 
 	/* no-op */

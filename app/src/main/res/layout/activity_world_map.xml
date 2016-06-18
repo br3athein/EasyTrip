@@ -12,7 +12,7 @@
 			android:layout_marginTop="15dp"
 			android:layout_height="50dp"
 			android:inputType="textPersonName"
-			android:text="Name"
+			android:text="@string/wmap_search_stub"
 			android:ems="10"
 			android:id="@+id/editText"/>
 
