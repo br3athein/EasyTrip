@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class CityPicker extends FragmentActivity implements OnMapReadyCallback, IntentionExtraKeys {
+public class WorldMap extends FragmentActivity implements OnMapReadyCallback, IntentionExtraKeys {
 
 	private static final String LOG_TAG = "Custom";
 	private static final double INITIAL_LATITUDE = 50.44847278765969;
@@ -192,6 +192,7 @@ public class CityPicker extends FragmentActivity implements OnMapReadyCallback, 
 		Address selected = new Address(Locale.getDefault());
 		selected.setCountryName(getString(R.string.picker_unresolved_country));
 		selected.setLocality(getString(R.string.picker_unresolved_city));
+
 		try {
 			selected = geocoder.getFromLocation(cPos.latitude, cPos.longitude, 1).get(0);
 			Log.d(LOG_TAG,

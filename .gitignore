@@ -6,3 +6,5 @@
 .DS_Store
 /build
 /captures
+./app/debug/res/values/google_maps_api.xml
+./app/release/res/values/google_maps_api.xml

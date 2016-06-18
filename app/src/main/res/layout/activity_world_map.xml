@@ -31,7 +31,7 @@
 						map:useViewLifecycle="true"
 
 
-						tools:context="com.example.br3athe_in.easyTrip.CityPicker"/>
+						tools:context="com.example.br3athe_in.easyTrip.WorldMap"/>
 
     <Button
         android:layout_width="315dip"
