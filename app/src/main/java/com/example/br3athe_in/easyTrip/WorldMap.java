@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -39,8 +38,6 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 	private static final double INITIAL_LONGITUDE = 30.52297968417406;
 	private static final LatLng INITIAL_POS = new LatLng(INITIAL_LATITUDE, INITIAL_LONGITUDE);
 	private GoogleMap mMap;
-
-	PolylineOptions polylineOptions = new PolylineOptions();
 
 	private Address lastResolvedAddress = new Address(Locale.getDefault());
 	private ArrayList<Marker> markedLocations = new ArrayList<>();
@@ -91,10 +88,6 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 		reloadMapFromSelector();
 		describeMarkerSetBehavior();
 		describeMarkerRemovalBehavior();
-	}
-
-	public void test(View view) {
-		mMap.addPolyline(polylineOptions);
 	}
 
 	private void reloadMapFromSelector() {
@@ -228,7 +221,6 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 		);
 		marker.showInfoWindow();
 		markedLocations.add(marker);
-		polylineOptions.add(latLng);
 	}
 
 	public void commit(View view) {
