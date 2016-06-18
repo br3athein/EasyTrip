@@ -46,8 +46,8 @@
 	    android:value="@string/google_maps_key"/>
 
 	  <activity
-	    android:name=".CityPicker"
-	    android:label="@string/title_activity_city_picker">
+	    android:name=".WorldMap"
+	    android:label="@string/app_title">
 	    <meta-data
 	    	android:name="android.support.PARENT_ACTIVITY"
 	    	android:value="com.example.br3athe_in.easyTrip.CitySelector"/>

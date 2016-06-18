@@ -30,4 +30,6 @@ public class City implements Serializable {
 		this.countryName = countryName;
 		this.position = new Position(latitude, longitude);
 	}
+
+
 }

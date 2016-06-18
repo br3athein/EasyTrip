@@ -43,21 +43,28 @@
 		<item>at 50,277 – 2,309</item>
 	</string-array>
 
-	<string name="cs_last_list_item_1">Добавить город…</string>
-	<string name="cs_last_list_item_2">Коснитесь элемента списка</string>
+	<string name="cs_add_city_top">Добавить город(а)…</string>
+	<string name="cs_add_city_bot">Коснитесь элемента списка</string>
 
-	<string name="title_activity_city_picker">Easy Trip</string>
+	<string name="app_title">Easy Trip</string>
 
 	<string name="commit_city_pick">Подтвердить выбор</string>
+
 	<string name="slctr_cntxt_show_map">Показать на карте</string>
 	<string name="slctr_cntxt_request_info">Запросить информацию</string>
 	<string name="slctr_cntxt_edit_notes">Редактировать заметки</string>
 	<string name="slctr_cntxt_remove_city">Удалить город из списка</string>
-	<string formatted="false" name="slctr_cntxt_coords_template">с координатами %3.3f, %3.3f</string>
+	<string name="slctr_cntxt_coords_template" formatted="false">с координатами %3.3f, %3.3f</string>
+	<!-- unused -->
+	<string name="slctr_close_without_confirmation">Вы уверены, что хотите вернуться? Все несохранённые изменения будут утеряны!</string>
 
-	<string name="picker_unresolved_country">Неизвестная страна</string>
-	<string name="picker_unresolved_city">Неизвестный город</string>
-	<string name="picker_remove_prompt_title">Удалить выбранный город?</string>
+	<string name="wmap_unresolved_country">Неизвестная страна</string>
+	<string name="wmap_unresolved_city">Неизвестный город</string>
+	<string name="wmap_remove_known_prompt_title" formatted="false">Удалить город %s из списка?</string>
+	<string name="wmap_remove_unknown_prompt_title">Удалить город из списка?</string>
+	<string name="wmap_guide">Для удаления города с карты нажмите и удерживайте всплывающую подсказку над ним.</string>
+
+	<!-- seems to be common -->
 	<string name="prompt_positive">Да</string>
 	<string name="prompt_negative">Нет</string>
 	<string name="placeholder_city_unknown">Неизвестный город</string>

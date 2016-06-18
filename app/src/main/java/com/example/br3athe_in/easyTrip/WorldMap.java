@@ -1,20 +1,23 @@
 package com.example.br3athe_in.easyTrip;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.br3athe_in.easyTrip.Util.City;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -22,6 +25,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,14 +39,16 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 	private static final double INITIAL_LONGITUDE = 30.52297968417406;
 	private static final LatLng INITIAL_POS = new LatLng(INITIAL_LATITUDE, INITIAL_LONGITUDE);
 	private GoogleMap mMap;
-	private Address lastResolvedAddress = new Address(Locale.getDefault());
 
+	PolylineOptions polylineOptions = new PolylineOptions();
+
+	private Address lastResolvedAddress = new Address(Locale.getDefault());
 	private ArrayList<Marker> markedLocations = new ArrayList<>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_city_picker);
+		setContentView(R.layout.activity_world_map);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		// Obtain the SupportMapFragment and get notified when the map is ready to be used.
 		SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -54,6 +61,7 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 	 */
 	@Override
 	public void onMapReady(GoogleMap googleMap) {
+		// region Final init, nothing to look for.
 		mMap = googleMap;
 
 		// TODO: Consider calling
@@ -64,46 +72,103 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 		// to handle the case where the user grants the permission. See the documentation
 		// for ActivityCompat#requestPermissions for more details.
 		// SecurityException is very possible to occur
+		//
+		// ...
+		// but not on my watch, pal.
 		if (ActivityCompat.checkSelfPermission(
 				this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
 				&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
 				!= PackageManager.PERMISSION_GRANTED) {
 			return;
 		}
+		// Relax, we're just fooling around with a debug version on our own device here. :3
 
 		mMap.setMyLocationEnabled(true);
-		ArrayList<City> savedState = (ArrayList<City>) getIntent().getExtras().get(EXTRA_CITIES_TO_VISIT);
+		// endregion
+
+		// Branch right here.
+		Toast.makeText(this, getString(R.string.wmap_guide), Toast.LENGTH_LONG).show();
+		reloadMapFromSelector();
+		describeMarkerSetBehavior();
+		describeMarkerRemovalBehavior();
+	}
+
+	public void test(View view) {
+		mMap.addPolyline(polylineOptions);
+	}
+
+	private void reloadMapFromSelector() {
+		ArrayList<City> savedState =
+				(ArrayList<City>) getIntent().getExtras().get(EXTRA_CITIES_TO_VISIT);
+		int focusToId = getIntent().getExtras().getInt(EXTRA_CITY_TO_FOCUS);
 		if (savedState.size() == 0) {
 			initOnBlankIntent();
 		} else {
-			initAgain(savedState);
+			initAgain(savedState, focusToId);
 		}
+	}
 
+	private void describeMarkerSetBehavior() {
 		mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 			@Override
 			public void onMapClick(LatLng latLng) {
 				// TODO: 30.05.2016 extract confirmation to this listener via context menu
-				// region Call economy attempts.
-					// Slip between an old position and an updated one
-					//	ArrayList<Float> distances = new ArrayList<>();
-					//	for(Marker m : markedLocations) {
-					//		float[] slip = new float[1];
-					//
-					//		Location.distanceBetween(
-					//				m.getPosition().latitude, m.getPosition().longitude,
-					//				latLng.latitude, latLng.longitude, slip
-					//		);
-					//		distances.add(slip[0]);
-					//	}
-					//	// Should be minimal distance from current latLng to markedLocations' content
-					//
-					//	if (Collections.min(distances) <= 10000) { // the slip is lesser than 10 km
-					//		return;
-					//	}
-				// endregion
+				// Slip between an old position and an updated one
+				float minDist = Float.MAX_VALUE;
+
+				for(Marker m : markedLocations) {
+					float[] slip = new float[1];
+
+					Location.distanceBetween(
+							m.getPosition().latitude, m.getPosition().longitude,
+							latLng.latitude, latLng.longitude, slip
+					);
+					minDist = Math.min(minDist, slip[0]);
+				}
+				// Minimal distance from current latLng to anu of markedLocations' content
+				if (minDist <= 15000) { // the slip is lesser than 15 km
+					return;
+				}
 				if (resolveAddress(latLng)) {
 					addSignedMarkerHere(latLng);
 				}
+			}
+		});
+	}
+
+	private void describeMarkerRemovalBehavior() {
+		mMap.setOnInfoWindowLongClickListener(new GoogleMap.OnInfoWindowLongClickListener() {
+			@Override
+			public void onInfoWindowLongClick(Marker marker) {
+				showRemovalPrompt(marker);
+			}
+
+			private void showRemovalPrompt(final Marker marker) {
+				new AlertDialog.Builder(WorldMap.this)
+						.setTitle(
+								!marker.getTitle().equals(getString(R.string.placeholder_city_unknown))?
+										String.format(
+												getString(R.string.wmap_remove_known_prompt_title), marker.getTitle()
+										)
+										:
+										getString(R.string.wmap_remove_unknown_prompt_title)
+						)
+						.setPositiveButton(
+								getString(R.string.prompt_positive),
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										markedLocations.remove(marker);
+										marker.remove();
+									}
+								}
+						)
+						.setNegativeButton(
+								getString(R.string.prompt_negative),
+								null
+						)
+						.create()
+						.show();
 			}
 		});
 	}
@@ -120,12 +185,13 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 						.position(INITIAL_POS)
 						.title("Киев")
 						.snippet("Украина")
+						.flat(true)
 		);
-		initialMarker.showInfoWindow();
 		markedLocations.add(initialMarker);
+		initialMarker.showInfoWindow();
 	}
 
-	private void initAgain(ArrayList<City> savedState) {
+	private void initAgain(ArrayList<City> savedState, int focusToId) {
 		for(City city : savedState) {
 			Marker marker = mMap.addMarker(
 					new MarkerOptions()
@@ -138,9 +204,10 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 
 		mMap.moveCamera(
 				CameraUpdateFactory.newLatLngZoom(
-						markedLocations.get(markedLocations.size() - 1).getPosition(), 8
+						markedLocations.get(focusToId).getPosition(), 8
 				)
 		);
+		markedLocations.get(focusToId).showInfoWindow();
 	}
 
 	private void addSignedMarkerHere(LatLng latLng) {
@@ -157,16 +224,17 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 				.position(latLng)
 				.title(nullableCityName)
 				.snippet(nullableCountryName)
+				.flat(true)
 		);
 		marker.showInfoWindow();
 		markedLocations.add(marker);
+		polylineOptions.add(latLng);
 	}
 
 	public void commit(View view) {
-		// TODO: 17.06.2016
 		Intent answer = getIntent();
 		setResult(RESULT_OK, answer);
-		// Crashes on attempt to marshal Marker value.
+
 		ArrayList<City> response = new ArrayList<>();
 
 		for (Marker m : markedLocations) {
@@ -190,8 +258,8 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 	private boolean resolveAddress(LatLng cPos) {
 		Geocoder geocoder = new Geocoder(this, Locale.getDefault());
 		Address selected = new Address(Locale.getDefault());
-		selected.setCountryName(getString(R.string.picker_unresolved_country));
-		selected.setLocality(getString(R.string.picker_unresolved_city));
+		selected.setCountryName(getString(R.string.wmap_unresolved_country));
+		selected.setLocality(getString(R.string.wmap_unresolved_city));
 
 		try {
 			selected = geocoder.getFromLocation(cPos.latitude, cPos.longitude, 1).get(0);
