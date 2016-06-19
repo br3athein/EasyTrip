@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class CitySelector extends AppCompatActivity implements IntentionExtraKeys {
-
 	private static final String LOG_TAG = "Custom";
 	private static final int ASK_FOR_CITY = 1337;
 	private static final String LIST_ITEM_TITLE = "TITLE";

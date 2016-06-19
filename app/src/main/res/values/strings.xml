@@ -70,6 +70,7 @@
 	<string name="city_close_notes_dialog">Закрыть диалог</string>
 	<string name="city_edit_notes_commit">Сохранить изменения</string>
 	<string name="city_edit_notes_decline">Выйти без изменений</string>
+	<string name="city_unsaved_alert">Несохранённые изменения будут потеряны!</string>
 
 	<!-- seems to be common -->
 	<string name="prompt_positive">Да</string>

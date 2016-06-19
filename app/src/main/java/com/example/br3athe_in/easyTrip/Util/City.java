@@ -34,9 +34,9 @@ public final class City implements Serializable {
 	}
 
 	private String notes;
-	public void showNotes(final Context context) {
 
-		TextView tvContentBox = new TextView(context);
+	public void showNotes(final Context context) {
+		final TextView tvContentBox = new TextView(context);
 		tvContentBox.setText(notes);
 		tvContentBox.setPadding(50, 50, 50, 50);
 
@@ -70,7 +70,31 @@ public final class City implements Serializable {
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
-								showNotes(context);
+								if (!notes.equals(etContentEditor.getText().toString())) {
+									new AlertDialog.Builder(context)
+											.setTitle(context.getString(R.string.city_unsaved_alert))
+											.setPositiveButton(
+													context.getString(R.string.prompt_positive),
+													new DialogInterface.OnClickListener() {
+														@Override
+														public void onClick(DialogInterface dialog, int which) {
+															showNotes(context);
+														}
+													}
+											)
+											.setNegativeButton(
+													context.getString(R.string.prompt_negative),
+													new DialogInterface.OnClickListener() {
+														@Override
+														public void onClick(DialogInterface dialog, int which) {
+															editNotes(context);
+														}
+													}
+											)
+									.show();
+								} else {
+									showNotes(context);
+								}
 							}
 						}
 				)
