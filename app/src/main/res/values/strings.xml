@@ -43,6 +43,7 @@
 	<string name="crttrvl_hints">Теперь оптимизируйте порядок посещения городов и сохраните результат :3</string>
 	<string name="crttrvl_optimize_title">Оптимизировать порядок посещения</string>
 	<string name="crttrvl_commit_title">Сохранить путешествие!</string>
+	<string name="crttrvl_show_optimized_route">Нанести маршрут на карту</string>
 
 	<!-- seems to be common -->
 	<string name="prompt_positive">Да</string>

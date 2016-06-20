@@ -122,4 +122,11 @@ public final class City implements Serializable {
 		this.position = new Position(latitude, longitude);
 		this.notes = context.getString(R.string.city_notes_stub);
 	}
+
+	public City(City other) {
+		this.cityName = other.getCityName();
+		this.countryName = other.getCountryName();
+		this.position = other.getPosition();
+		this.notes = other.notes;
+	}
 }

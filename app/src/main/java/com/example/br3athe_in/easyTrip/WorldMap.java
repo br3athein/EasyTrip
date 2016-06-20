@@ -253,7 +253,8 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 				}
 
 				answer.putExtra(EXTRA_CITIES_TO_VISIT, response);
-				// fall-through
+				finish();
+				break;
 			case SCENARIO_DRAW_ROUTE:
 				finish();
 				break;
