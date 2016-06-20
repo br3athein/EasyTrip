@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.br3athe_in.easyTrip.Util.City;
+import com.example.br3athe_in.easyTrip.Util.IntentionExtraKeys;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -24,13 +25,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class WorldMap extends FragmentActivity implements OnMapReadyCallback, IntentionExtraKeys {
-
 	private static final String LOG_TAG = "Custom";
 	private static final double INITIAL_LATITUDE = 50.44847278765969;
 	private static final double INITIAL_LONGITUDE = 30.52297968417406;
@@ -81,8 +82,21 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 		mMap.setMyLocationEnabled(true);
 		// endregion
 
-		// Branch right here.
-		Toast.makeText(this, getString(R.string.wmap_guide), Toast.LENGTH_LONG).show();
+		int scenario = getIntent().getIntExtra(EXTRA_SCENARIO, 0);
+		switch (scenario) {
+			case SCENARIO_PICK_CITIES:
+				scenario_pickCities();
+				break;
+			case SCENARIO_DRAW_ROUTE:
+				scenario_drawRoute();
+				break;
+			default:
+				Log.d(LOG_TAG, "WorldMap.onMapReady: something is wrong with scenario keys.");
+		}
+	}
+
+	private void scenario_pickCities() {
+		Toast.makeText(this, getString(R.string.wmap_hints), Toast.LENGTH_LONG).show();
 		reloadMapFromSelector();
 		describeMarkerSetBehavior();
 		describeMarkerRemovalBehavior();
@@ -219,24 +233,33 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 	}
 
 	public void commit(View view) {
-		Intent answer = getIntent();
-		setResult(RESULT_OK, answer);
+		int scenario = getIntent().getIntExtra(EXTRA_SCENARIO, 0);
 
-		ArrayList<City> response = new ArrayList<>();
+		switch (scenario) {
+			case SCENARIO_PICK_CITIES:
+				Intent answer = getIntent();
+				setResult(RESULT_OK, answer);
 
-		for (Marker m : markedLocations) {
-			response.add(new City(
-					m.getTitle(),
-					m.getSnippet(),
-					m.getPosition().latitude,
-					m.getPosition().longitude,
-					this
-			));
+				ArrayList<City> response = new ArrayList<>();
+
+				for (Marker m : markedLocations) {
+					response.add(new City(
+							m.getTitle(),
+							m.getSnippet(),
+							m.getPosition().latitude,
+							m.getPosition().longitude,
+							this
+					));
+				}
+
+				answer.putExtra(EXTRA_CITIES_TO_VISIT, response);
+				// fall-through
+			case SCENARIO_DRAW_ROUTE:
+				finish();
+				break;
+			default:
+				Log.d(LOG_TAG, "WorldMap.commit: something is wrong with scenario keys.");
 		}
-
-		answer.putExtra(EXTRA_CITIES_TO_VISIT, response);
-
-		finish();
 	}
 
 	/** This transforms a place's coordinates into verbal address
@@ -266,5 +289,11 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 			Toast.makeText(this, "Geocoding error. " + e.getMessage(), Toast.LENGTH_SHORT).show();
 			return false;
 		}
+	}
+
+	private void scenario_drawRoute() {
+		initAgain((ArrayList<City>) getIntent().getExtras().get(EXTRA_CITIES_TO_VISIT), 0);
+		PolylineOptions po = (PolylineOptions) getIntent().getExtras().get(EXTRA_DECODED_POLYLINE);
+		mMap.addPolyline(po);
 	}
 }

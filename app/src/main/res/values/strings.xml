@@ -1,6 +1,7 @@
 <resources>
 	<string name="app_name">Easy Trip</string>
-	<string name="action_settings">Settings</string>
+	<string name="action_settings">Настройки (?)</string>
+
 	<string name="main_greeting">Добро пожаловать в Easy Trip!\n
 	Выберите одну из опций, чтобы продолжить…</string>
 	<string name="main_generate_travel">Создать путешествие!</string>
@@ -11,42 +12,8 @@
 
 	<string name="cs_return">Button</string>
 	<string name="cs_commit">Подтвердить выбор!</string>
-
-	<string-array name="testArray">
-		<item>Иван</item>
-		<item>Марья</item>
-		<item>Петр</item>
-		<item>Антон</item>
-		<item>Даша</item>
-		<item>Борис</item>
-		<item>Костя</item>
-		<item>Игорь</item>
-		<item>Анна</item>
-		<item>Денис</item>
-		<item>Вадим</item>
-		<item>Ольга</item>
-		<item>Сергей</item>
-		<item>Добавить город, лел</item>
-	</string-array>
-
-	<string-array name="cs_initial1">
-		<item>Киев</item>
-		<item>Мадрид</item>
-		<item>Париж</item>
-		<item>Вена</item>
-	</string-array>
-
-	<string-array name="cs_initial2">
-		<item>at 50,277 – 30,523</item>
-		<item>at 40,426 – 3,692</item>
-		<item>at 48,838 – 30,523</item>
-		<item>at 50,277 – 2,309</item>
-	</string-array>
-
 	<string name="cs_add_city_top">Добавить город(а)…</string>
 	<string name="cs_add_city_bot">Коснитесь элемента списка</string>
-
-	<string name="app_title">Easy Trip</string>
 
 	<string name="commit_city_pick">Подтвердить выбор</string>
 
@@ -55,6 +22,7 @@
 	<string name="slctr_cntxt_edit_notes">Показать заметки</string>
 	<string name="slctr_cntxt_remove_city">Удалить город из списка</string>
 	<string name="slctr_cntxt_coords_template" formatted="false">с координатами %3.3f, %3.3f</string>
+	<string name="slctr_hints">Выберите желаемые для посещения города и нажмите на кнопку подтверждения:</string>
 	<!-- unused -->
 	<string name="slctr_close_without_confirmation">Вы уверены, что хотите вернуться? Все несохранённые изменения будут утеряны!</string>
 
@@ -63,7 +31,7 @@
 	<string name="wmap_unresolved_city">Неизвестный город</string>
 	<string name="wmap_remove_known_prompt_title" formatted="false">Удалить город %s из списка?</string>
 	<string name="wmap_remove_unknown_prompt_title">Удалить город из списка?</string>
-	<string name="wmap_guide">Для удаления города с карты нажмите и удерживайте всплывающую подсказку над ним.</string>
+	<string name="wmap_hints">Для удаления города с карты нажмите и удерживайте всплывающую подсказку над ним.</string>
 
 	<string name="city_notes_stub">Заметок пока нет.</string>
 	<string name="city_edit_notes_prompt">Редактировать заметки</string>
@@ -71,6 +39,10 @@
 	<string name="city_edit_notes_commit">Сохранить изменения</string>
 	<string name="city_edit_notes_decline">Выйти без изменений</string>
 	<string name="city_unsaved_alert">Несохранённые изменения будут потеряны!</string>
+
+	<string name="crttrvl_hints">Теперь оптимизируйте порядок посещения городов и сохраните результат :3</string>
+	<string name="crttrvl_optimize_title">Оптимизировать порядок посещения</string>
+	<string name="crttrvl_commit_title">Сохранить путешествие!</string>
 
 	<!-- seems to be common -->
 	<string name="prompt_positive">Да</string>

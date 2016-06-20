@@ -2,11 +2,18 @@
   <dictionary name="br3athe_in">
     <words>
       <w>badass</w>
+      <w>cntxt</w>
+      <w>coords</w>
+      <w>crttrvl</w>
       <w>dafuq</w>
+      <w>geocoder</w>
       <w>geocoding</w>
       <w>googling</w>
       <w>monkeycode</w>
       <w>noop</w>
+      <w>renumerated</w>
+      <w>slctr</w>
+      <w>wmap</w>
       <w>workz</w>
     </words>
   </dictionary>

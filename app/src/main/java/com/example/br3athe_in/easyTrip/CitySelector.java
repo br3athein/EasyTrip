@@ -14,6 +14,7 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.example.br3athe_in.easyTrip.Util.City;
+import com.example.br3athe_in.easyTrip.Util.IntentionExtraKeys;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +32,8 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 
 	private ListView lv;
 
+	private HashMap<String, String> incomingCity = new HashMap<>();
+
 	/** <code>{@link City}</code> list, main information source */
 	private ArrayList<City> ctCitiesToVisit = new ArrayList<>();
 	/** Another city list, just to fill the <code>{@link ListView}</code> */
@@ -47,16 +50,19 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 					lvFillContent.add(incomingCity);
 				}
 	};
-	private HashMap<String, String> incomingCity = new HashMap<>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		super.onCreate(savedInstanceState);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.activity_city_selector);
 		loadViews();
-		lv.setChoiceMode(ListView.CHOICE_MODE_NONE);
+	}
 
+	private void loadViews() {
+		lv = (ListView) findViewById(R.id.lvCitiesSelected);
+
+		lv.setChoiceMode(ListView.CHOICE_MODE_NONE);
 		lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> p, View v, int pos, long id) {
@@ -69,13 +75,14 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 
 		lvFillContent.clear();
 
-		SimpleAdapter adapter = new SimpleAdapter(this, lvFillContent,
-				android.R.layout.simple_list_item_2,
-				new String[] {LIST_ITEM_TITLE, LIST_ITEM_DETAILS},
-				new int[] {android.R.id.text1, android.R.id.text2}
+		lv.setAdapter(
+				new SimpleAdapter(this, lvFillContent,
+						android.R.layout.simple_list_item_2,
+						new String[] {LIST_ITEM_TITLE, LIST_ITEM_DETAILS},
+						new int[] {android.R.id.text1, android.R.id.text2}
+				)
 		);
 
-		lv.setAdapter(adapter);
 		registerForContextMenu(lv);
 	}
 
@@ -122,10 +129,6 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 		return super.onContextItemSelected(item);
 	}
 
-	private void loadViews() {
-		lv = (ListView) findViewById(R.id.lwCitiesSelected);
-	}
-
 	/** Opens <code>{@link WorldMap}</code> with an actual content
 	 *  and sets camera position to specified city.
 	 *  @param focusToId id of the city that map should focus to.
@@ -134,6 +137,7 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 		Intent intent = new Intent(this, WorldMap.class);
 		intent.putExtra(EXTRA_CITIES_TO_VISIT, ctCitiesToVisit);
 		intent.putExtra(EXTRA_CITY_TO_FOCUS, focusToId);
+		intent.putExtra(EXTRA_SCENARIO, SCENARIO_PICK_CITIES);
 		startActivityForResult(intent, ASK_FOR_CITY);
 	}
 
@@ -194,6 +198,10 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 				Toast.LENGTH_LONG
 		)
 		.show();
+
+		Intent intent = new Intent(this, CreateTravelActivity.class);
+		intent.putExtra(EXTRA_CITIES_TO_VISIT, ctCitiesToVisit);
+		startActivity(intent);
 	}
 
 	/* no-op */

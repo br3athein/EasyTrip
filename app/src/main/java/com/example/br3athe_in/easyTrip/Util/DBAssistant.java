@@ -8,7 +8,7 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 public class DBAssistant extends SQLiteOpenHelper implements BaseColumns {
-	private static final String LOG_TAG = "TravelLogs";
+	private static final String LOG_TAG = "Custom";
 
 	private static final String DB_NAME = "travels.db";
 	private static final String DB_TABLE = "Travels";
@@ -16,7 +16,7 @@ public class DBAssistant extends SQLiteOpenHelper implements BaseColumns {
 	private static final String KEY_VAL = "Value";
 
 	private static final String DATABASE_CREATE_SCRIPT =
-			"create table " + DB_TABLE
+			"optimize table " + DB_TABLE
 					+ " (" + BaseColumns._ID + " integer primary key autoincrement, "
 					+ KEY_NAME + " text not null, "
 					+ KEY_VAL + " integer"

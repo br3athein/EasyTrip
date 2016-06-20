@@ -1,11 +1,12 @@
 package com.example.br3athe_in.easyTrip.Util;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 
 // TODO: 15.06.2016 
 public final class Abc {
+	// ну, он же вроде как static.
+	private Abc () {}
 	// region Прекомпилируемая настройка алгоритма
 
 	// Макс. количество итераций, после которого локальный поиск завершается.
@@ -23,150 +24,53 @@ public final class Abc {
 
 	// endregion
 	// region Исходные данные плюс метод вызова алгоритма
-	/** Список городов (названий городов по порядку посещения) */
-	public ArrayList<String> way = new ArrayList<>();
-	/** Величина суммарной эстетичности выбраного пути */
-	public int wayAesthetics;
-	/** Затраченное время на выбранный путь (часы) */
-	public int wayTime;
 
 	// Входные данные
 
 	/** Набор выбраных городов */
-	public ArrayList<String> cities = new ArrayList<>();
-	/** Время на посещение выбраных городов */
-	public ArrayList<Integer> citiesVisitTime = new ArrayList<>();
-	/** Расстояния между двумя городами (рассчитывается во времени) */
-	public ArrayList<ArrayList<Integer>> wayLength = new ArrayList<>();
-	/** Массив эстетики городов */
-	public ArrayList<Integer> estetics = new ArrayList<>();
-	/** Лимит времени (часы) */
-	public int timeLimit;
 
-	Random r = new Random();
+	private static Random r = new Random();
 
 	/**
-	 * На вызове <code>create</code> алгоритм отрабатывает полностью, если чо.
+	 * На вызове <code>optimize</code> алгоритм отрабатывает полностью, если чо.
 	 */
-	public void create()
+	public static ArrayList<City> optimize(ArrayList<City> cities)
 	{
 		// Банальная арифметическая прогрессия: 0 - cities.size().
-		// Она же - отныне и вовек - нумерация исходных городов
+		//Она же - отныне и вовек - нумерация исходных городов.
 		ArrayList<Integer> initialSequenceRenumerated = new ArrayList<>(cities.size());
-
 		for (int i = 0; i < cities.size(); i++) {
 			initialSequenceRenumerated.add(i);
 		}
 
+		// Точно то же самое, но для оптимального порядка.
 		ArrayList<Integer> optimalSequenceRenumerated;
 
 		// "Поехали!" © Гагарин?..
-		optimalSequenceRenumerated = globalRun(initialSequenceRenumerated);
+		optimalSequenceRenumerated = singleRun(initialSequenceRenumerated);
 
 		// Ну, покатались - и хватит.
-		wayTime = routeTiming(optimalSequenceRenumerated);
-		wayAesthetics = sequenceSatisfaction(optimalSequenceRenumerated);
-
-		// Толкуем кучу непонятных цифр, транслируем в не менее адекватный ответ.
+		// Теперь толкуем кучу непонятных цифр, транслируем в не менее адекватный ответ.
+		ArrayList<City> optimalRoute = new ArrayList<>();
 		for (int i : optimalSequenceRenumerated) {
-			way.add(cities.get(optimalSequenceRenumerated.get(i)));
+			optimalRoute.add(cities.get(optimalSequenceRenumerated.get(i)));
 		}
+		return optimalRoute;
 	}
 	// endregion
 	// region Имплементация globalRun и смежных методов
-
-	private ArrayList<Integer> globalRun(ArrayList<Integer> rawInitialSet) {
-		// ПУНКТ 1. Сортировка rawInitialSet по возрастанию эстетической ценности
-		int leastAdorableCityIndex = 0;
-
-		ArrayList<Integer> initialSet = new ArrayList<>();
-		ArrayList<Integer> esteticsRemained = new ArrayList<>(estetics);
-
-		while (rawInitialSet.size() > 0) {
-			leastAdorableCityIndex = estetics.indexOf(Collections.min(esteticsRemained));
-			initialSet.add(rawInitialSet.get(leastAdorableCityIndex));
-			rawInitialSet.remove(leastAdorableCityIndex);
-			esteticsRemained.remove(leastAdorableCityIndex);
-		}
-
-		// ПУНКТ 2. Последовательное исключение бесполезных городов из выборки
-		// (рекурсия)
-
-		return singleRun(bestPossibleSetOnRecurrent(initialSet));
-	}
-
-	/**
-	 * Проверка возможности построить допустимое по времени решение на данном наборе городов.
-	 * @param   InitialSet Сортированная по возрастанию собственной эст. ценности выборка
-	 *                     отмеченных для посещения городов
-	 *                     (или её подмножество на рекурсивных вызовах, включая пустые).
-	 * @return  Первый найденный допустимый путь.
-	 */
-	private ArrayList<Integer> bestPossibleSetOnRecurrent(ArrayList<Integer> InitialSet) {
-		// Выход из рекурсии
-		if (InitialSet.size() == 0) {
-			return null;
-		}
-		// Проверка на адекватность выборки
-		// пытаемся ПЕРЕМЕШАТЬ порядок городов MAX_ITERATIONS_LOCAL раз...
-		// ах, да, на всякий случай оставляем изначальный аргумент в целости и сохранности
-		ArrayList<Integer> buffer;
-
-		buffer = firstPossibleRearrange(InitialSet);
-
-		if (buffer != null) {
-			return buffer;
-		}
-
-		// Ветка: выборка не прошла "проверку"
-		// Исключить самый бесполезный город, продолжать до победного конца
-		for (int i = 0; i < InitialSet.size(); i++) {
-			ArrayList<Integer> dummy = bestPossibleSetOnRecurrent(trimCitySet(InitialSet, i));
-			// dummy прошёл проверку и получает повышение.
-			// Как насчёт партейки в теннис?
-			if (dummy.size() > 0) {
-				return dummy;
-			}
-		}
-
-		// Выборка со всеми подмножествами недопустима в принципе.
-		// throw new плакулька();
-		return null;
-	}
-
-	/**
-	 * Вырезает элемент по указанному индексу, оставляя в живых сам аргумент.
-	 * @param currentMostUselessCity индекс удаляемого элемента.
-	 * @param InitialSet             пациент для проведения операции.
-	 */
-	private ArrayList<Integer> trimCitySet(
-					ArrayList<Integer> InitialSet, int currentMostUselessCity) {
-		ArrayList<Integer> trimmedSet = new ArrayList<>(InitialSet);
-		trimmedSet.remove(currentMostUselessCity);
-
-		return trimmedSet;
-	}
-
-	private ArrayList<Integer> firstPossibleRearrange(ArrayList<Integer> buffer) {
-		for (int i = 0; i < MAX_ITERATIONS_LOCAL; i++) {
-			// ...пока не получим допустимый маршрут, переставляем местами города
-			if (routeTiming(buffer) < timeLimit) {
-				return buffer;
-			}
-			buffer = rearrange(buffer);
-		}
-		return null;
-	}
-
+	// Тут мог быть ваш globalRun. Как жаль, что он нахуй не нужен для частной задачи коммивояжёра. :3
+	// Нет, правда, очень жаль.
+	// R.I.P., дорогие 86 строк.
 	// endregion
 	// region Имплементация singleRun и смежных методов
 
-	private ArrayList<Integer> singleRun(ArrayList<Integer> initialSequence) {
+	private static ArrayList<Integer> singleRun(ArrayList<Integer> initialSequence) {
 		try {
 			int stagnatingFor = 0,
-							singleRunIterationCounter = 0,
-							previousRating = 0,
-							currentRating;
+					singleRunIterationCounter = 0,
+					previousRating = 0,
+					currentRating;
 
 			// ПУНКТ 1. //
 			// Начальная (!) выборка в INTEL_SCOUT_QUANTITY участков
@@ -174,7 +78,7 @@ public final class Abc {
 			ArrayList<ArrayList<Integer>> colonyTerritory
 							= new ArrayList<>(FORAGERS_QUANTITY + SCOUT_QUANTITY);
 
-			colonyTerritory.add(initialSequence); // # Bug inside ©
+			colonyTerritory.add(initialSequence); // # Bug inside © - think not
 
 			for (int i = 1; i < FORAGERS_QUANTITY + SCOUT_QUANTITY; i++) {
 				insertPathInOrder(colonyTerritory, rearrange(initialSequence));
@@ -186,7 +90,7 @@ public final class Abc {
 			// Начало оптимизационного цикла... //
 			do {
 				// Оценка наилучшего результата.
-				currentRating = routeTiming(colonyTerritory.get(0));
+				currentRating = routeRating(colonyTerritory.get(0));
 
 				// ПУНКТ 3. //
 				// Отбор трёх лучших для поиска в окрестностях
@@ -289,7 +193,7 @@ public final class Abc {
 		}
 	}
 
-	private int sum(int[] incoming) {
+	private static int sum(int[] incoming) {
 		int sum = 0;
 		for(int i : incoming) {
 			sum += i;
@@ -302,15 +206,15 @@ public final class Abc {
 	 * порядка по ценности (длине пути).
 	 * Т.е. первым стоит наилучший участок.
 	 */
-	private void insertPathInOrder(ArrayList<ArrayList<Integer>> destination, ArrayList<Integer> value) {
+	private static void insertPathInOrder(ArrayList<ArrayList<Integer>> destination, ArrayList<Integer> value) {
 		int insertionIndex = 0;
 
 		if (destination.size() == 0) {
 			destination.add(value);
 		} else {
-			double valueTiming = routeTiming(value);
+			double valueTiming = routeRating(value);
 
-			while (insertionIndex < destination.size() && routeTiming(destination.get(insertionIndex)) < valueTiming) {
+			while (insertionIndex < destination.size() && routeRating(destination.get(insertionIndex)) < valueTiming) {
 				insertionIndex++;
 			}
 
@@ -322,7 +226,7 @@ public final class Abc {
 	 * @param initialSequence Выборка из множества городов
 	 * @return Рандомная перестановка этой выборки
 	 */
-	private ArrayList<Integer> rearrange(ArrayList<Integer> initialSequence) {
+	private static ArrayList<Integer> rearrange(ArrayList<Integer> initialSequence) {
 		int notSoRandomCity;
 		ArrayList<Integer> randomizedSequence = new ArrayList<>(initialSequence.size());
 		ArrayList<Integer> initialSequenceCopy = new ArrayList<>(initialSequence);
@@ -339,7 +243,7 @@ public final class Abc {
 	/**
 	 * Хождение вокруг да около, короче
 	 */
-	private ArrayList<Integer> localSearch(ArrayList<Integer> initialSequence) {
+	private static ArrayList<Integer> localSearch(ArrayList<Integer> initialSequence) {
 		int iterationCounter = 0;
 		ArrayList<Integer> searchResult;
 
@@ -360,36 +264,32 @@ public final class Abc {
 	 * (если учитывать только эстетику, получится либо константа, либо нуль.
 	 * Так себе перспектива, выхлоп инфы - минимум.)
 	 */
-	private int sequenceSatisfaction(ArrayList<Integer> Sequence) {
-		if (routeTiming(Sequence) > timeLimit) {
-			return 0;
-		}
-
+	private static int sequenceSatisfaction(ArrayList<Integer> Sequence) {
 		int totalSatisfaction = 0; // шо за ересь, фи.
 
-		for(int cc : Sequence)
-			totalSatisfaction += estetics.get(cc);
+		for(int cc : Sequence);
+			//totalSatisfaction += estetics.get(cc);
 
 		return totalSatisfaction;
 	}
 
 	/*
-	 * Длина пути в часах.
+	 * Длина пути в КИЛОМЕТРАХ БЛЯТЬ, наконец-то.
 	 */
-	private int routeTiming(ArrayList<Integer> route) {
+	private static int routeRating(ArrayList<Integer> route) {
 		if (route.size() == 0) {
 			return 0;
 		}
 
-		int TotalTiming = 0;
+		int totalDist = 0;
 
 		for (int i = 0; i < route.size() - 1; i++) {
-			TotalTiming += wayLength.get(route.get(i)).get(route.get(i + 1));
-			TotalTiming += citiesVisitTime.get(route.get(i));
+			// ну ты понел
+			//totalDist += wayLength.get(route.get(i)).get(route.get(i + 1));
 		}
-		TotalTiming += citiesVisitTime.get(route.get(route.size() - 1));
+		//totalDist += citiesVisitTime.get(route.get(route.size() - 1));
 
-		return TotalTiming;
+		return totalDist;
 	}
 
 	/**
@@ -411,7 +311,7 @@ public final class Abc {
 	/**
 	 * Мутации, они же отстранения по Хеммингу.
 	 */
-	private ArrayList<Integer> hammingStray(ArrayList<Integer> initialSequence) {
+	private static ArrayList<Integer> hammingStray(ArrayList<Integer> initialSequence) {
 		int strayRadius = 0;
 		ArrayList<Integer> strayedSequence = new ArrayList<>(initialSequence);
 
@@ -429,7 +329,7 @@ public final class Abc {
 	/**
 	 * Шо, первый раз замужем?
 	 */
-	private void swap(int p1, int p2, ArrayList<Integer> sequence) {
+	private static void swap(int p1, int p2, ArrayList<Integer> sequence) {
 		try {
 			int Buffer = sequence.get(p1);
 			sequence.set(p1, sequence.get(p2));

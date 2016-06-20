@@ -7,20 +7,43 @@
               android:showDividers="none"
               android:weightSum="1">
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="430dp"
-        android:layout_marginTop="10dp"
-        android:id="@+id/lwCitiesSelected">
-    </ListView>
+	<TextView
+	  android:text="@string/slctr_hints"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:layout_marginTop="10dp"
+	  android:layout_gravity="center"
+	  android:paddingLeft="15dp"
+	  android:paddingRight="15dp"
+	  android:typeface="normal"
+	  android:textStyle="bold"
+	  android:textSize="15sp"
+	  android:textAlignment="center"
+	  android:textColor="@color/wallet_dim_foreground_inverse_holo_dark"
 
-    <Button
-        android:text="@string/cs_commit"
-        android:layout_width="315dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="5dp"
-        android:layout_gravity="center"
-        android:id="@+id/bCommit"
-        android:onClick="createTravel"/>
+	  android:layout_weight="0.02"
+
+	  android:id="@+id/textView"/>
+
+	<ListView
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_marginTop="10dp"
+			android:id="@+id/lvCitiesSelected"
+			android:layout_weight="0.95">
+	</ListView>
+
+	<Button
+	  android:text="@string/cs_commit"
+	  android:layout_width="match_parent"
+	  android:layout_height="60dp"
+	  android:layout_marginTop="5dp"
+	  android:layout_marginBottom="15dp"
+	  android:layout_marginLeft="15dp"
+	  android:layout_marginRight="15dp"
+	  android:layout_gravity="center"
+	  android:id="@+id/bCommit"
+	  android:onClick="createTravel"
+		android:layout_weight="0.03"/>
 
 </LinearLayout>

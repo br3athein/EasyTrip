@@ -26,8 +26,8 @@
 	  		<category android:name="android.intent.category.LAUNCHER"/>
 	  	</intent-filter>
 	  </activity>
-	  <activity android:name=".CitySelector">
-	  </activity>
+	  <activity android:name=".CitySelector"/>
+		<activity android:name=".CreateTravelActivity"/>
 	  <!--
 						 The API key for Google Maps-based APIs is defined as a string resource.
 						 (See the file "res/values/google_maps_api.xml").
@@ -47,11 +47,15 @@
 
 	  <activity
 	    android:name=".WorldMap"
-	    android:label="@string/app_title">
+	    android:label="@string/app_name">
 	    <meta-data
 	    	android:name="android.support.PARENT_ACTIVITY"
 	    	android:value="com.example.br3athe_in.easyTrip.CitySelector"/>
-	  </activity>
+	  </activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+		<meta-data
+				android:name="com.google.android.gms.version"
+				android:value="@integer/google_play_services_version"/>
 		<!--not likely to do something at all-->
 		<!--service
 				android:name=".FetchAddressIntentService"

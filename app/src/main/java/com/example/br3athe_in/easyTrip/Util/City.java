@@ -16,6 +16,11 @@ public final class City implements Serializable {
 	public static class Position implements Serializable {
 		public double latitude; public double longitude;
 		Position(double x, double y) {this.latitude = x; this.longitude = y;}
+
+		@Override
+		public String toString() {
+			return latitude + "," + longitude;
+		}
 	}
 
 	private Position position;
