@@ -1,25 +1,28 @@
 package com.example.br3athe_in.easyTrip;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import com.example.br3athe_in.easyTrip.Util.City;
+import com.example.br3athe_in.easyTrip.Util.DBAssistant;
 import com.example.br3athe_in.easyTrip.Util.IntentionExtraKeys;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.example.br3athe_in.easyTrip.Util.Travel;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -45,8 +48,10 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 
 	private ListView lv;
 	private ArrayList<City> cities;
+	private ArrayList<City> citiesOptimal;
 
 	PolylineOptions optimalRouteOverView;
+	private int totalLength;
 	private boolean optimized = false;
 
 	@Override
@@ -97,6 +102,7 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 	public void optimize(View view) {
 		if(!optimized) {
 			new GetDirections().execute();
+			// TODO: some fallometry would be just great. Toast some meters!
 		} else {
 			Log.d(LOG_TAG, "Intents to show the route on map");
 			Intent intent = new Intent(CreateTravelActivity.this, WorldMap.class);
@@ -171,15 +177,17 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 			try {
 				dataJsonObject = new JSONObject(jsonString);
 				initResponse(dataJsonObject);
+				citiesOptimal = responseValues.citiesOptimal;
 				optimalRouteOverView = responseValues.decodedOverviewPolyline;
+				totalLength = responseValues.totalRouteLength;
 
 				((Button) findViewById(R.id.bOptimize)).setText(R.string.crttrvl_show_optimized_route);
 				optimized = true;
 				Log.d(LOG_TAG, "Considering optimized, about to reload content");
-				reloadContent(responseValues.citiesOptimal);
+				reloadContent(citiesOptimal);
 			} catch (Exception e) {
 				Log.d(LOG_TAG,
-						"CreateTravelActivity.GetDirections.Troubles in onPostExecute", e);
+						"CreateTravelActivity.GetDirections: Troubles in onPostExecute", e);
 			}
 		}
 
@@ -295,6 +303,40 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 	}
 
 	public void commit(View view) {
-		// stub
+		if(optimized) {
+
+			final EditText travelName = new EditText(this);
+			// TODO: 20.06.2016 extract
+			travelName.setHint("Дайте имя своему путешествию");
+
+			new AlertDialog.Builder(this)
+					.setView(travelName)
+					.setPositiveButton(
+							getString(R.string.crttrvl_save_travel),
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									Travel travel = new Travel(
+											travelName.getText().toString(),
+											citiesOptimal,
+											totalLength
+									);
+									DBAssistant dbAssistant = new DBAssistant(CreateTravelActivity.this);
+									Log.d(LOG_TAG, "Writing travel to DB...");
+									dbAssistant.writeTravel(travel);
+									Log.d(LOG_TAG, "Writing done.");
+									// TODO: 20.06.2016 show new travel on lookup activity
+									finish();
+								}
+							}
+					)
+					.setNegativeButton(
+							getString(R.string.crttrvl_prompt_negative),
+							null
+					)
+					.show();
+		} else {
+			Toast.makeText(this, "Optimize it first!", Toast.LENGTH_SHORT);
+		}
 	}
 }

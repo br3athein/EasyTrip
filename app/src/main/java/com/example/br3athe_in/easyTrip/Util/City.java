@@ -65,6 +65,7 @@ public final class City implements Serializable {
 
 	private void editNotes(final Context context) {
 		final EditText etContentEditor = new EditText(context);
+		etContentEditor.setHint(context.getString(R.string.city_notes_stub));
 		etContentEditor.setText(notes);
 		etContentEditor.setPadding(50, 50, 50, 50);
 
@@ -116,11 +117,11 @@ public final class City implements Serializable {
 				.show();
 	}
 
-	public City(String cityName, String countryName, double latitude, double longitude, Context context) {
+	public City(String cityName, String countryName, double latitude, double longitude) {
 		this.cityName = cityName;
 		this.countryName = countryName;
 		this.position = new Position(latitude, longitude);
-		this.notes = context.getString(R.string.city_notes_stub);
+		this.notes = "";
 	}
 
 	public City(City other) {

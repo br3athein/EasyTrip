@@ -247,8 +247,7 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 							m.getTitle(),
 							m.getSnippet(),
 							m.getPosition().latitude,
-							m.getPosition().longitude,
-							this
+							m.getPosition().longitude
 					));
 				}
 

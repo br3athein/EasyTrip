@@ -191,14 +191,6 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 	}
 
 	public void createTravel(View view) {
-		Toast.makeText(
-				this,
-				"This should optimize your input.\n" +
-						" Implementation is currently unavailable and is being under construction.",
-				Toast.LENGTH_LONG
-		)
-		.show();
-
 		Intent intent = new Intent(this, CreateTravelActivity.class);
 		intent.putExtra(EXTRA_CITIES_TO_VISIT, ctCitiesToVisit);
 		startActivity(intent);
