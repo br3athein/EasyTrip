@@ -5,7 +5,10 @@
       <w>cntxt</w>
       <w>coords</w>
       <w>crttrvl</w>
+      <w>cslctr</w>
       <w>dafuq</w>
+      <w>denumerate</w>
+      <w>deserializing</w>
       <w>geocoder</w>
       <w>geocoding</w>
       <w>googling</w>
@@ -13,6 +16,8 @@
       <w>noop</w>
       <w>renumerated</w>
       <w>slctr</w>
+      <w>tslctr</w>
+      <w>unopt</w>
       <w>waypoint</w>
       <w>wmap</w>
       <w>workz</w>

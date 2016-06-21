@@ -6,6 +6,9 @@ import android.support.v7.app.AlertDialog;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.example.br3athe_in.easyTrip.R;
 
 import java.io.Serializable;
@@ -27,6 +30,17 @@ public final class City implements Serializable {
 	public Position getPosition() {
 		return position;
 	}
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	public void denumerate() {
+		Pattern p = Pattern.compile("^\\d+ - (.*)");
+		Matcher m = p.matcher(cityName);
+		if(m.matches()) {
+			cityName = m.group(1);
+		}
+	}
 
 	private String cityName;
 	public String getCityName() {
@@ -43,16 +57,17 @@ public final class City implements Serializable {
 	public void showNotes(final Context context) {
 		final TextView tvContentBox = new TextView(context);
 		tvContentBox.setText(notes);
+		tvContentBox.setHint(R.string.city_notes_hint);
 		tvContentBox.setPadding(50, 50, 50, 50);
 
 		new AlertDialog.Builder(context)
 				.setView(tvContentBox)
 				.setNegativeButton(
-						context.getString(R.string.city_close_notes_dialog),
+						R.string.city_close_notes_dialog,
 						null
 				)
 				.setPositiveButton(
-						context.getString(R.string.city_edit_notes_prompt),
+						R.string.city_edit_notes_prompt,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
@@ -65,22 +80,22 @@ public final class City implements Serializable {
 
 	private void editNotes(final Context context) {
 		final EditText etContentEditor = new EditText(context);
-		etContentEditor.setHint(context.getString(R.string.city_notes_stub));
+		etContentEditor.setHint(R.string.city_notes_hint);
 		etContentEditor.setText(notes);
 		etContentEditor.setPadding(50, 50, 50, 50);
 
 		new AlertDialog.Builder(context)
 				.setView(etContentEditor)
 				.setNegativeButton(
-						context.getString(R.string.city_edit_notes_decline),
+						R.string.city_edit_notes_decline,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
 								if (!notes.equals(etContentEditor.getText().toString())) {
 									new AlertDialog.Builder(context)
-											.setTitle(context.getString(R.string.city_unsaved_alert))
+											.setTitle(R.string.city_unsaved_alert)
 											.setPositiveButton(
-													context.getString(R.string.prompt_positive),
+													R.string.prompt_positive,
 													new DialogInterface.OnClickListener() {
 														@Override
 														public void onClick(DialogInterface dialog, int which) {
@@ -89,7 +104,7 @@ public final class City implements Serializable {
 													}
 											)
 											.setNegativeButton(
-													context.getString(R.string.prompt_negative),
+													R.string.prompt_negative,
 													new DialogInterface.OnClickListener() {
 														@Override
 														public void onClick(DialogInterface dialog, int which) {
@@ -105,7 +120,7 @@ public final class City implements Serializable {
 						}
 				)
 				.setPositiveButton(
-						context.getString(R.string.city_edit_notes_commit),
+						R.string.city_edit_notes_commit,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {

@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.example.br3athe_in.easyTrip.Util.ActionKeys;
 import com.example.br3athe_in.easyTrip.Util.City;
 import com.example.br3athe_in.easyTrip.Util.IntentionExtraKeys;
 
@@ -20,14 +21,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class CitySelector extends AppCompatActivity implements IntentionExtraKeys {
+public class CitySelector extends AppCompatActivity implements IntentionExtraKeys, ActionKeys {
 	private static final String LOG_TAG = "Custom";
 	private static final String LIST_ITEM_TITLE = "TITLE";
 	private static final String LIST_ITEM_DETAILS = "COORDINATES";
-	private static final int ACTION_SHOW_ON_MAP = 1;
-	private static final int ACTION_REQUEST_INFO = 2;
-	private static final int ACTION_SHOW_NOTES = 3;
-	private static final int ACTION_REMOVE_CITY = 4;
+
 
 	private ListView lv;
 
@@ -99,10 +97,10 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 				((HashMap<String, String>) lv.getItemAtPosition(acmi.position)).get(LIST_ITEM_TITLE)
 		);
 
-		menu.add(Menu.NONE, ACTION_SHOW_ON_MAP, 1, R.string.slctr_cntxt_show_map);
-		menu.add(Menu.NONE, ACTION_REQUEST_INFO, 2, R.string.slctr_cntxt_request_info);
-		menu.add(Menu.NONE, ACTION_SHOW_NOTES, 3, R.string.slctr_cntxt_edit_notes);
-		menu.add(Menu.NONE, ACTION_REMOVE_CITY, 4, R.string.slctr_cntxt_remove_city);
+		menu.add(Menu.NONE, ACTION_SHOW_ON_MAP, 1, R.string.cslctr_cntxt_show_map);
+		menu.add(Menu.NONE, ACTION_REQUEST_INFO, 2, R.string.cslctr_cntxt_request_info);
+		menu.add(Menu.NONE, ACTION_SHOW_NOTES, 3, R.string.cslctr_cntxt_edit_notes);
+		menu.add(Menu.NONE, ACTION_REMOVE_CITY, 4, R.string.cslctr_cntxt_remove_city);
 	}
 
 	@Override
@@ -150,6 +148,7 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 				reloadContent(ctCitiesToVisit);
 				break;
 			case INTENTION_CREATE_TRAVEL:
+				setResult(RESULT_OK);
 				finish();
 				break;
 		}
@@ -171,7 +170,7 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 
 			incomingCity.put(LIST_ITEM_TITLE, nullableCityName + ", " + nullableCountryName);
 			incomingCity.put(LIST_ITEM_DETAILS,
-					String.format(Locale.US, getString(R.string.slctr_cntxt_coords_template),
+					String.format(Locale.US, getString(R.string.cslctr_cntxt_coords_template),
 							m.getPosition().latitude, m.getPosition().longitude));
 			lvFillContent.add(lvFillContent.size() - 1, incomingCity);
 		}
@@ -192,7 +191,11 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 		lv.setAdapter(newAdapter);
 	}
 
-	public void createTravel(View view) {
+	public void commit(View view) {
+		if(ctCitiesToVisit.isEmpty()) {
+			Toast.makeText(this, R.string.cslctr_empty_list, Toast.LENGTH_SHORT).show();
+			return;
+		}
 		Intent intent = new Intent(this, CreateTravelActivity.class);
 		intent.putExtra(EXTRA_CITIES_TO_VISIT, ctCitiesToVisit);
 		startActivityForResult(intent, INTENTION_CREATE_TRAVEL);

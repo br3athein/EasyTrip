@@ -13,27 +13,32 @@ import java.util.ArrayList;
 public class Travel implements Serializable {
 	public static int totalTravels = 0;
 
-	ArrayList<City> citiesToVisit;
+	public ArrayList<City> citiesToVisit;
 	public String title;
-	public int length;
+	public int lengthMeters;
+	public ArrayList<String> detailedRouteLegs;
 
-	public Travel() {
-		this("", new ArrayList<City>(), 0);
+	public float getLengthKms() {
+		return ((float) lengthMeters) / 1000;
 	}
 
 	public Travel(Travel other) {
 		this.citiesToVisit = new ArrayList<>();
 		this.citiesToVisit.addAll(other.citiesToVisit);
 		this.title = other.title;
-		this.length = other.length;
+		this.lengthMeters = other.lengthMeters;
+		this.detailedRouteLegs = other.detailedRouteLegs;
 	}
 
-	public Travel(String travelTitle, ArrayList<City> toFill, int travelLength) {
+	public Travel(String travelTitle, ArrayList<City> toFill,
+								int travelLength, ArrayList<String> encodedRoute) {
 		totalTravels++;
 		citiesToVisit = new ArrayList<>();
 		citiesToVisit.addAll(toFill);
-		title = new String(travelTitle);
-		length = travelLength;
+		title = travelTitle;
+		lengthMeters = travelLength;
+		detailedRouteLegs = new ArrayList<>();
+		detailedRouteLegs.addAll(encodedRoute);
 	}
 
 	public static Travel deserialize(byte[] serializedTravel) {
@@ -69,7 +74,6 @@ public class Travel implements Serializable {
 		try {
 			out = new ObjectOutputStream(bos);
 			out.writeObject(this);
-
 		} catch (IOException e) {
 			// ignore
 		} finally {

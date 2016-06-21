@@ -12,18 +12,17 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.br3athe_in.easyTrip.Util.DBAssistant;
 import com.example.br3athe_in.easyTrip.Util.IntentionExtraKeys;
-import com.example.br3athe_in.easyTrip.Util.Travel;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements IntentionExtraKeys {
 
 	private static final String LOG_TAG = "Custom";
+
+	// Итого: слишком много лишней логики реализации не в тех Activity.
+	// Рефакторить, рефакторить и ещё раз рефакторить. ©
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements IntentionExtraKey
 		setSupportActionBar(toolbar);
 
 		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+		assert fab != null;
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -51,24 +51,8 @@ public class MainActivity extends AppCompatActivity implements IntentionExtraKey
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.menu_main, menu);
 		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-
-		//noinspection SimplifiableIfStatement
-		if (id == R.id.action_settings) {
-			return true;
-		}
-
-		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -76,7 +60,9 @@ public class MainActivity extends AppCompatActivity implements IntentionExtraKey
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
 			case INTENTION_CREATE_TRAVEL:
-				Toast.makeText(this, "Yay! You have created a travel!", Toast.LENGTH_SHORT).show();
+				if (resultCode == RESULT_OK) {
+					Toast.makeText(this, R.string.main_create_travel_success, Toast.LENGTH_SHORT).show();
+				}
 				break;
 		}
 	}
@@ -84,27 +70,26 @@ public class MainActivity extends AppCompatActivity implements IntentionExtraKey
 	public void openCreateTravelMenu(View view) {
 		Intent intent = new Intent(this, CitySelector.class);
 		startActivityForResult(intent, INTENTION_CREATE_TRAVEL);
+		Log.d(LOG_TAG, "CreateTravelMenu has started");
 	}
 
 	public void lookup(View view) {
-		ArrayList<Travel> travels = new DBAssistant(this).readTravels();
-		try {
-			String firstname = travels.get(0).title;
-			Log.d(LOG_TAG, "Wow, here it is: " + firstname);
-		} catch (NullPointerException e) {
-			Log.d(LOG_TAG, "DB seems to be quite empty. Duplicate.");
-		}
+		Intent intent = new Intent(this, TravelSelector.class);
+		startActivity(intent);
+		Log.d(LOG_TAG, "TravelSelector has started");
 	}
 
 	public void followMe(View view) {
+		final DBAssistant dbKiller = new DBAssistant(this);
 		new AlertDialog.Builder(this)
-				.setMessage("This stuff nukes DB. Nuke DB?")
+				.setMessage("This stuff nukes DB.\n" +
+						"Nuke DB?")
 				.setPositiveButton(
-						"Yeah, teach that motherf*cker a lesson",
+						"Yeah, teach that goddamn punk a lesson",
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
-								new DBAssistant(MainActivity.this).nukeDB(true);
+								dbKiller.nukeDB(true);
 							}
 						}
 				)

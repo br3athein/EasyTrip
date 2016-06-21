@@ -17,12 +17,13 @@
 
 	<string name="commit_city_pick">Подтвердить выбор</string>
 
-	<string name="slctr_cntxt_show_map">Показать на карте</string>
-	<string name="slctr_cntxt_request_info">Запросить информацию</string>
-	<string name="slctr_cntxt_edit_notes">Показать заметки</string>
-	<string name="slctr_cntxt_remove_city">Удалить город из списка</string>
-	<string name="slctr_cntxt_coords_template" formatted="false">с координатами %3.3f, %3.3f</string>
-	<string name="slctr_hints">Выберите желаемые для посещения города и нажмите на кнопку подтверждения:</string>
+	<string name="cslctr_cntxt_show_map">Показать на карте</string>
+	<string name="cslctr_cntxt_request_info">Запросить информацию</string>
+	<string name="cslctr_cntxt_edit_notes">Показать заметки</string>
+	<string name="cslctr_cntxt_remove_city">Удалить город из списка</string>
+	<string name="cslctr_cntxt_coords_template" formatted="false">с координатами %3.3f, %3.3f</string>
+	<string name="cslctr_hints">Выберите желаемые для посещения города и нажмите на кнопку подтверждения:</string>
+	<string name="cslctr_empty_list">Не выбрано ни одного города :(</string>
 	<!-- unused -->
 	<string name="slctr_close_without_confirmation">Вы уверены, что хотите вернуться? Все несохранённые изменения будут утеряны!</string>
 
@@ -33,7 +34,7 @@
 	<string name="wmap_remove_unknown_prompt_title">Удалить город из списка?</string>
 	<string name="wmap_hints">Для удаления города с карты нажмите и удерживайте всплывающую подсказку над ним.</string>
 
-	<string name="city_notes_stub">Заметок пока нет.</string>
+	<string name="city_notes_hint">Заметок пока нет.</string>
 	<string name="city_edit_notes_prompt">Редактировать заметки</string>
 	<string name="city_close_notes_dialog">Закрыть диалог</string>
 	<string name="city_edit_notes_commit">Сохранить изменения</string>
@@ -47,8 +48,18 @@
 	<string name="crttrvl_save_travel">Сохранить путешествие!</string>
 	<string name="crttrvl_prompt_negative">Отмена</string>
 	<string name="crttrvl_name_your_travel_prompt">Дайте имя своему путешествию</string>
-	<string name="crttrvl_length_unoptimized" formatted="false">"Текущая длина маршрута составляет %.2f километров.\nОптимизируйте его!"</string>
-	<string name="crttrvl_length_optimized" formatted="false">"Текущая длина маршрута составляет %.2f километров.\nВы сэкономили %d км!"</string>
+	<string name="crttrvl_length_unoptimized" formatted="false">"Текущая длина маршрута составляет\n%.2f километров.\nОптимизируйте его!"</string>
+	<string name="crttrvl_length_optimized" formatted="false">"Текущая длина маршрута составляет\n%.2f километров.\nВы сэкономили %d км!"</string>
+	<string name="crttrvl_unopt_route_drawn">Отображён исходный маршрут.\nВы можете его оптимизировать!</string>
+	<string name="crttrvl_opt_route_drawn">Отображён оптимальный маршрут!</string>
+
+	<string name="tslctr_hints">Выберите одно из своих путешествий…</string>
+	<string name="tslctr_empty_list_stub">Похоже, вы ещё на создали ни одного путешествия.\nНажмите сюда, чтобы попробовать!</string>
+	<string name="tslctr_back">Вернуться в главное меню</string>
+	<string name="tslctr_context_title">Что вы хотите сделать?</string>
+	<string name="tslctr_query_travel">Просмотреть города</string>
+	<string name="tslctr_redraw_route">Отобразить маршрут</string>
+	<string name="tslctr_remove_travel">Удалить путешествие</string>
 
 	<!-- seems to be common -->
 	<string name="prompt_positive">Да</string>
@@ -56,4 +67,5 @@
 	<string name="placeholder_city_unknown">Неизвестный город</string>
 	<string name="placeholder_country_unknown">Неизвестная страна</string>
 
+	<string name="main_create_travel_success">Поздравляем, Вы успешно создали путешествие!</string>
 </resources>

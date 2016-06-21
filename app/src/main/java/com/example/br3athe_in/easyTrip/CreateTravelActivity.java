@@ -48,7 +48,9 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 	private ArrayList<City> cities;
 	private ArrayList<City> citiesOptimal;
 
-	PolylineOptions currentRouteOverView;
+	private ArrayList<String> currentEncodedRouteOverView = new ArrayList<>();
+	private ArrayList<String> currentEncodedDetailedPolylines = new ArrayList<>();
+
 	private int totalLength;
 	private boolean optimized = false;
 	int unoptimizedLength = 0;
@@ -58,8 +60,8 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 		super.onCreate(savedInstanceState);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.activity_create_travel);
-		getIntent().getExtras().get(EXTRA_CITIES_TO_VISIT);
 		cities = (ArrayList<City>) getIntent().getExtras().get(EXTRA_CITIES_TO_VISIT);
+		enumerate(cities);
 
 		new GetDirections().execute();
 
@@ -86,7 +88,7 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 
 			incomingCity.put(LIST_ITEM_TITLE, nullableCityName + ", " + nullableCountryName);
 			incomingCity.put(LIST_ITEM_DETAILS,
-					String.format(Locale.US, getString(R.string.slctr_cntxt_coords_template),
+					String.format(Locale.US, getString(R.string.cslctr_cntxt_coords_template),
 							c.getPosition().latitude, c.getPosition().longitude));
 			lvFillContent.add(incomingCity);
 		}
@@ -100,18 +102,42 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 		);
 	}
 
+	private void enumerate(ArrayList<City> cities) {
+		int i = 0;
+		for(City c : cities) {
+			c.setCityName(++i + " - " +c.getCityName());
+		}
+	}
+
+	private ArrayList<City> denumerate(ArrayList<City> cities) {
+		for(City c : cities) {
+			c.denumerate();
+		}
+		return cities;
+	}
+
 	public void optimize(View view) {
 		if(!optimized) {
 			new GetDirectionsOptimal().execute();
+		} else {
+			Toast.makeText(this, "Маршрут уже оптимизирован!", Toast.LENGTH_SHORT).show();
 		}
 	}
 
 	public void drawCurrentRoute(View view) {
 		Log.d(LOG_TAG, "Intents to show the route on map");
 		Intent intent = new Intent(CreateTravelActivity.this, WorldMap.class);
-		intent.putExtra(EXTRA_DECODED_POLYLINE, currentRouteOverView);
-		intent.putExtra(EXTRA_CITIES_TO_VISIT, cities);
-		intent.putExtra(EXTRA_SCENARIO, SCENARIO_DRAW_ROUTE);
+		if (optimized) {
+			intent.putExtra(EXTRA_CITIES_TO_VISIT, citiesOptimal);
+			intent.putExtra(EXTRA_ENCODED_POLYLINE, currentEncodedDetailedPolylines);
+			intent.putExtra(EXTRA_SCENARIO, SCENARIO_DRAW_OPTIMAL_ROUTE);
+			Toast.makeText(this, R.string.crttrvl_opt_route_drawn, Toast.LENGTH_SHORT).show();
+		} else {
+			intent.putExtra(EXTRA_CITIES_TO_VISIT, cities);
+			intent.putExtra(EXTRA_ENCODED_POLYLINE, currentEncodedRouteOverView);
+			intent.putExtra(EXTRA_SCENARIO, SCENARIO_DRAW_PLAIN_ROUTE);
+			Toast.makeText(this, R.string.crttrvl_unopt_route_drawn, Toast.LENGTH_SHORT).show();
+		}
 
 		startActivity(intent);
 	}
@@ -119,6 +145,7 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 	public void commit(View view) {
 		if(optimized) {
 			final EditText travelName = new EditText(this);
+			travelName.setPadding(50, 50, 50, 50);
 			travelName.setHint(R.string.crttrvl_name_your_travel_prompt);
 
 			new AlertDialog.Builder(this)
@@ -128,16 +155,18 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 							new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
+									denumerate(citiesOptimal);
 									Travel travel = new Travel(
 											travelName.getText().toString(),
 											citiesOptimal,
-											totalLength
+											totalLength,
+											currentEncodedDetailedPolylines
 									);
 									DBAssistant dbAssistant = new DBAssistant(CreateTravelActivity.this);
 									Log.d(LOG_TAG, "Writing travel to DB...");
 									dbAssistant.writeTravel(travel);
 									Log.d(LOG_TAG, "Writing done.");
-
+									setResult(RESULT_OK);
 									finish();
 								}
 							}
@@ -158,7 +187,7 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 		String jsonResult = "";
 
 		class ResponseValues {
-			PolylineOptions decodedOverviewPolyline;
+			String decodedOverviewPolyline;
 			int totalRouteLength;
 			private ArrayList<City> citiesOptimal = new ArrayList<>();
 		}
@@ -207,7 +236,7 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 				dataJsonObject = new JSONObject(jsonString);
 				initResponse(dataJsonObject);
 				unoptimizedLength = responseValues.totalRouteLength;
-				currentRouteOverView = responseValues.decodedOverviewPolyline;
+				currentEncodedRouteOverView.add(responseValues.decodedOverviewPolyline);
 
 				((TextView) findViewById(R.id.tvTravelStatus)).setText(
 						String.format(
@@ -226,9 +255,9 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 
 			StringBuilder queryBuilder =
 					new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
-			queryBuilder.append("origin=").append(homeCity.getPosition().toString());
-			queryBuilder.append("&destination=").append(homeCity.getPosition().toString());
-			queryBuilder.append("&waypoints=optimize:false");
+			queryBuilder.append("origin=").append(homeCity.getPosition().toString())
+					.append("&destination=").append(homeCity.getPosition().toString())
+					.append("&waypoints=optimize:false");
 			for (City c : cities.subList(1, cities.size())) {
 				queryBuilder.append("|").append(c.getPosition().toString());
 			}
@@ -240,10 +269,8 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 		private void initResponse(JSONObject dataJsonObject) throws JSONException {
 			Log.d(LOG_TAG, "initResponse called");
 			responseValues.decodedOverviewPolyline =
-					decodePoly(
-							dataJsonObject.getJSONArray("routes").getJSONObject(0)
-									.getJSONObject("overview_polyline").getString("points")
-					);
+					dataJsonObject.getJSONArray("routes").getJSONObject(0)
+							.getJSONObject("overview_polyline").getString("points");
 
 			JSONArray legs =
 					dataJsonObject.getJSONArray("routes").getJSONObject(0).getJSONArray("legs");
@@ -263,40 +290,6 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 
 			responseValues.totalRouteLength = length;
 		}
-
-		private PolylineOptions decodePoly(String encoded) {
-			ArrayList<LatLng> poly = new ArrayList<>();
-			int index = 0, len = encoded.length();
-			int lat = 0, lng = 0;
-
-			while (index < len) {
-				int b, shift = 0, result = 0;
-				do {
-					b = encoded.charAt(index++) - 63;
-					result |= (b & 0x1f) << shift;
-					shift += 5;
-				} while (b >= 0x20);
-				int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-				lat += dlat;
-
-				shift = 0;
-				result = 0;
-				do {
-					b = encoded.charAt(index++) - 63;
-					result |= (b & 0x1f) << shift;
-					shift += 5;
-				} while (b >= 0x20);
-				int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-				lng += dlng;
-
-				LatLng p = new LatLng((((double) lat / 1E5)), (((double) lng / 1E5)));
-				poly.add(p);
-			}
-
-			PolylineOptions polylineOptions = new PolylineOptions().addAll(poly);
-			polylineOptions.color(Color.RED);
-			return polylineOptions;
-		}
 	}
 
 	// kill me somebody pls
@@ -306,7 +299,7 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 		String jsonResult = "";
 
 		class ResponseValues {
-			PolylineOptions decodedOverviewPolyline;
+			ArrayList<String> encodedDetailedPolyline = new ArrayList<>();
 			int totalRouteLength;
 			private ArrayList<City> citiesOptimal = new ArrayList<>();
 		}
@@ -357,15 +350,24 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 				dataJsonObject = new JSONObject(jsonString);
 				initResponse(dataJsonObject);
 				citiesOptimal = responseValues.citiesOptimal;
-				currentRouteOverView = responseValues.decodedOverviewPolyline;
+				currentEncodedDetailedPolylines.addAll(responseValues.encodedDetailedPolyline);
 				totalLength = responseValues.totalRouteLength;
+				enumerate(denumerate(citiesOptimal));
 
 				((TextView) findViewById(R.id.tvTravelStatus)).setText(
 						String.format(getString(R.string.crttrvl_length_optimized),
-								Float.valueOf(totalLength) / 1000,
+								(float) totalLength / 1000,
 								(unoptimizedLength - totalLength) / 1000
 						)
 				);
+				Toast.makeText(CreateTravelActivity.this,
+						String.format(
+								getString(R.string.crttrvl_length_optimized),
+								(float) totalLength / 1000,
+								(unoptimizedLength - totalLength) / 1000
+						),
+						Toast.LENGTH_SHORT).show();
+
 				optimized = true;
 				Log.d(LOG_TAG, "Considering optimized, about to reload content");
 				reloadContent(citiesOptimal);
@@ -391,7 +393,7 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 
 				incomingCity.put(LIST_ITEM_TITLE, nullableCityName + ", " + nullableCountryName);
 				incomingCity.put(LIST_ITEM_DETAILS,
-						String.format(Locale.US, getString(R.string.slctr_cntxt_coords_template),
+						String.format(Locale.US, getString(R.string.cslctr_cntxt_coords_template),
 								m.getPosition().latitude, m.getPosition().longitude));
 				lvFillContent.add(incomingCity);
 			}
@@ -412,10 +414,10 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 			City homeCity = cities.get(0);
 
 			StringBuilder queryBuilder =
-					new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
-			queryBuilder.append("origin=").append(homeCity.getPosition().toString());
-			queryBuilder.append("&destination=").append(homeCity.getPosition().toString());
-			queryBuilder.append("&waypoints=optimize:true");
+					new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?")
+							.append("origin=").append(homeCity.getPosition().toString())
+							.append("&destination=").append(homeCity.getPosition().toString())
+							.append("&waypoints=optimize:true");
 			for (City c : cities.subList(1, cities.size())) {
 				queryBuilder.append("|").append(c.getPosition().toString());
 			}
@@ -426,11 +428,6 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 
 		private void initResponse(JSONObject dataJsonObject) throws JSONException {
 			Log.d(LOG_TAG, "initResponse called");
-			responseValues.decodedOverviewPolyline =
-					decodePoly(
-							dataJsonObject.getJSONArray("routes").getJSONObject(0)
-									.getJSONObject("overview_polyline").getString("points")
-					);
 
 			JSONArray legs =
 					dataJsonObject.getJSONArray("routes").getJSONObject(0).getJSONArray("legs");
@@ -440,7 +437,15 @@ public class CreateTravelActivity extends AppCompatActivity implements Intention
 
 			int length = 0;
 			for (int i = 0; i < legs.length(); i++) {
-				length += legs.getJSONObject(i).getJSONObject("distance").getInt("value");
+				JSONObject cLeg = legs.getJSONObject(i);
+				length += cLeg.getJSONObject("distance").getInt("value");
+
+				JSONArray cSteps = cLeg.getJSONArray("steps");
+				for(int j = 0; j < cSteps.length(); j++) {
+					responseValues.encodedDetailedPolyline.add(
+							cSteps.getJSONObject(j).getJSONObject("polyline").getString("points")
+					);
+				}
 			}
 
 			responseValues.citiesOptimal.add(cities.get(0));

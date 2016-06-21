@@ -12,7 +12,7 @@
 			android:layout_marginTop="15dp"
 			android:layout_height="wrap_content"
 			android:inputType="textPersonName"
-			android:text="@string/wmap_search_stub"
+			android:hint="@string/wmap_search_stub"
 			android:ems="10"
 			android:id="@+id/editText"/>
 
@@ -22,8 +22,9 @@
 						android:id="@+id/map"
 						android:name="com.google.android.gms.maps.SupportMapFragment"
 						android:layout_width="match_parent"
-						android:layout_height="420dp"
+						android:layout_height="0dp"
 						android:layout_marginTop="15dp"
+						android:layout_weight="0.95"
 
 						map:mapType="normal"
 						map:uiCompass="true"
@@ -34,11 +35,13 @@
 						tools:context="com.example.br3athe_in.easyTrip.WorldMap"/>
 
     <Button
-        android:layout_width="315dip"
-        android:layout_height="70dip"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
         android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:text="@string/commit_city_pick"
-        android:layout_marginTop="25dp"
 				android:id="@+id/bCommit"
 				android:onClick="commit"/>
 

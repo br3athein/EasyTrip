@@ -20,7 +20,7 @@
 
 			android:layout_weight="0.02"
 
-			android:id="@+id/textView"/>
+			android:id="@+id/tvTitle"/>
 
 	<ListView
 			android:layout_width="match_parent"
@@ -38,14 +38,18 @@
 			android:layout_gravity="center"
 			android:paddingLeft="15dp"
 			android:paddingRight="15dp"
+			android:typeface="normal"
+			android:textStyle="bold"
 			android:textSize="15sp"
+			android:textAlignment="center"
+			android:textColor="@color/wallet_dim_foreground_inverse_holo_dark"
 			android:id="@+id/tvTravelStatus"
 			android:layout_weight="0.02"/>
 
 	<Button
 			android:text="@string/crttrvl_show_route"
 			android:layout_width="match_parent"
-			android:layout_height="60dp"
+			android:layout_height="35dp"
 			android:layout_marginTop="5dp"
 			android:layout_marginLeft="15dp"
 			android:layout_marginRight="15dp"
@@ -57,7 +61,7 @@
 	<Button
 			android:text="@string/crttrvl_optimize_title"
 			android:layout_width="match_parent"
-			android:layout_height="60dp"
+			android:layout_height="35dp"
 			android:layout_marginTop="5dp"
 			android:layout_marginLeft="15dp"
 			android:layout_marginRight="15dp"
@@ -69,7 +73,7 @@
 	<Button
 			android:text="@string/crttrvl_commit_title"
 			android:layout_width="match_parent"
-			android:layout_height="60dp"
+			android:layout_height="35dp"
 			android:layout_marginTop="5dp"
 			android:layout_marginBottom="15dp"
 			android:layout_marginLeft="15dp"

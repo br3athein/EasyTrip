@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -25,6 +26,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.IOException;
@@ -87,7 +89,8 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 			case SCENARIO_PICK_CITIES:
 				scenario_pickCities();
 				break;
-			case SCENARIO_DRAW_ROUTE:
+			case SCENARIO_DRAW_PLAIN_ROUTE:
+			case SCENARIO_DRAW_OPTIMAL_ROUTE:
 				scenario_drawRoute();
 				break;
 			default:
@@ -253,7 +256,9 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 				answer.putExtra(EXTRA_CITIES_TO_VISIT, response);
 				finish();
 				break;
-			case SCENARIO_DRAW_ROUTE:
+			case SCENARIO_DRAW_PLAIN_ROUTE:
+			case SCENARIO_DRAW_OPTIMAL_ROUTE:
+				setResult(RESULT_OK);
 				finish();
 				break;
 			default:
@@ -292,7 +297,47 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 
 	private void scenario_drawRoute() {
 		initAgain((ArrayList<City>) getIntent().getExtras().get(EXTRA_CITIES_TO_VISIT), 0);
-		PolylineOptions po = (PolylineOptions) getIntent().getExtras().get(EXTRA_DECODED_POLYLINE);
-		mMap.addPolyline(po);
+		ArrayList<Polyline> pops = new ArrayList<>();
+		for(String cs : (ArrayList<String>) getIntent().getExtras().get(EXTRA_ENCODED_POLYLINE)) {
+			pops.add(mMap.addPolyline(decodePoly(cs)));
+		}
+	}
+
+	private PolylineOptions decodePoly(String encoded) {
+		ArrayList<LatLng> poly = new ArrayList<>();
+		int index = 0, len = encoded.length();
+		int lat = 0, lng = 0;
+
+		while (index < len) {
+			int b, shift = 0, result = 0;
+			do {
+				b = encoded.charAt(index++) - 63;
+				result |= (b & 0x1f) << shift;
+				shift += 5;
+			} while (b >= 0x20);
+			int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+			lat += dlat;
+
+			shift = 0;
+			result = 0;
+			do {
+				b = encoded.charAt(index++) - 63;
+				result |= (b & 0x1f) << shift;
+				shift += 5;
+			} while (b >= 0x20);
+			int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+			lng += dlng;
+
+			LatLng p = new LatLng((((double) lat / 1E5)), (((double) lng / 1E5)));
+			poly.add(p);
+		}
+
+		PolylineOptions polylineOptions = new PolylineOptions().addAll(poly);
+		if(this.getIntent().getIntExtra(EXTRA_SCENARIO, 0) == SCENARIO_DRAW_PLAIN_ROUTE) {
+			polylineOptions.color(Color.RED);
+		} else {
+			polylineOptions.color(Color.BLUE);
+		}
+		return polylineOptions;
 	}
 }
