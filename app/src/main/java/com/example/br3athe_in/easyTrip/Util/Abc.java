@@ -3,7 +3,6 @@ package com.example.br3athe_in.easyTrip.Util;
 import java.util.ArrayList;
 import java.util.Random;
 
-// TODO: 15.06.2016 
 public final class Abc {
 	// ну, он же вроде как static.
 	private Abc () {}

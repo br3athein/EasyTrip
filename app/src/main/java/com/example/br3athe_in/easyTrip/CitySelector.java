@@ -22,7 +22,6 @@ import java.util.Locale;
 
 public class CitySelector extends AppCompatActivity implements IntentionExtraKeys {
 	private static final String LOG_TAG = "Custom";
-	private static final int ASK_FOR_CITY = 1337;
 	private static final String LIST_ITEM_TITLE = "TITLE";
 	private static final String LIST_ITEM_DETAILS = "COORDINATES";
 	private static final int ACTION_SHOW_ON_MAP = 1;
@@ -138,17 +137,20 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 		intent.putExtra(EXTRA_CITIES_TO_VISIT, ctCitiesToVisit);
 		intent.putExtra(EXTRA_CITY_TO_FOCUS, focusToId);
 		intent.putExtra(EXTRA_SCENARIO, SCENARIO_PICK_CITIES);
-		startActivityForResult(intent, ASK_FOR_CITY);
+		startActivityForResult(intent, INTENTION_ASK_FOR_CITY);
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
-			case ASK_FOR_CITY:
+			case INTENTION_ASK_FOR_CITY:
 				if(resultCode == RESULT_CANCELED) { return; }
 
 				ctCitiesToVisit = (ArrayList<City>) data.getExtras().get(EXTRA_CITIES_TO_VISIT);
 				reloadContent(ctCitiesToVisit);
+				break;
+			case INTENTION_CREATE_TRAVEL:
+				finish();
 				break;
 		}
 	}
@@ -193,7 +195,7 @@ public class CitySelector extends AppCompatActivity implements IntentionExtraKey
 	public void createTravel(View view) {
 		Intent intent = new Intent(this, CreateTravelActivity.class);
 		intent.putExtra(EXTRA_CITIES_TO_VISIT, ctCitiesToVisit);
-		startActivity(intent);
+		startActivityForResult(intent, INTENTION_CREATE_TRAVEL);
 	}
 
 	/* no-op */

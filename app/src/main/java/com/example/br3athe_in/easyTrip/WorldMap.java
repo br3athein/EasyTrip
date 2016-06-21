@@ -60,7 +60,7 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 		// region Final init, nothing to look for.
 		mMap = googleMap;
 
-		// TODO: Consider calling
+		// notTODO: Consider calling
 		//    ActivityCompat#requestPermissions
 		// here to request the missing permissions, and then overriding
 		//   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -117,7 +117,6 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 		mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 			@Override
 			public void onMapClick(LatLng latLng) {
-				// TODO: 30.05.2016 extract confirmation to this listener via context menu
 				// Slip between an old position and an updated one
 				float minDist = Float.MAX_VALUE;
 

@@ -30,6 +30,30 @@
 			android:layout_weight="0.95">
 	</ListView>
 
+	<TextView
+			android:text=""
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:layout_gravity="center"
+			android:paddingLeft="15dp"
+			android:paddingRight="15dp"
+			android:textSize="15sp"
+			android:id="@+id/tvTravelStatus"
+			android:layout_weight="0.02"/>
+
+	<Button
+			android:text="@string/crttrvl_show_route"
+			android:layout_width="match_parent"
+			android:layout_height="60dp"
+			android:layout_marginTop="5dp"
+			android:layout_marginLeft="15dp"
+			android:layout_marginRight="15dp"
+			android:layout_gravity="center"
+			android:id="@+id/bDrawRoute"
+			android:onClick="drawCurrentRoute"
+			android:layout_weight="0.03"/>
+
 	<Button
 			android:text="@string/crttrvl_optimize_title"
 			android:layout_width="match_parent"

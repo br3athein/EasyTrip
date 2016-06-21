@@ -8,4 +8,7 @@ public interface IntentionExtraKeys {
 
 	int SCENARIO_PICK_CITIES = 0xDeadBeef;
 	int SCENARIO_DRAW_ROUTE = 0xCafeBabe;
+
+	int INTENTION_CREATE_TRAVEL = 0x00005551;
+	int INTENTION_ASK_FOR_CITY = 0x00005552;
 }

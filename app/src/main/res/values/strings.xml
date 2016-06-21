@@ -43,9 +43,12 @@
 	<string name="crttrvl_hints">Теперь оптимизируйте порядок посещения городов и сохраните результат :3</string>
 	<string name="crttrvl_optimize_title">Оптимизировать порядок посещения</string>
 	<string name="crttrvl_commit_title">Сохранить путешествие!</string>
-	<string name="crttrvl_show_optimized_route">Нанести маршрут на карту</string>
+	<string name="crttrvl_show_route">Нанести маршрут на карту</string>
 	<string name="crttrvl_save_travel">Сохранить путешествие!</string>
 	<string name="crttrvl_prompt_negative">Отмена</string>
+	<string name="crttrvl_name_your_travel_prompt">Дайте имя своему путешествию</string>
+	<string name="crttrvl_length_unoptimized" formatted="false">"Текущая длина маршрута составляет %.2f километров.\nОптимизируйте его!"</string>
+	<string name="crttrvl_length_optimized" formatted="false">"Текущая длина маршрута составляет %.2f километров.\nВы сэкономили %d км!"</string>
 
 	<!-- seems to be common -->
 	<string name="prompt_positive">Да</string>

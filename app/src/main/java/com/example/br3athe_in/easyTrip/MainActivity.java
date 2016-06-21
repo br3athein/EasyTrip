@@ -16,11 +16,12 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.br3athe_in.easyTrip.Util.DBAssistant;
+import com.example.br3athe_in.easyTrip.Util.IntentionExtraKeys;
 import com.example.br3athe_in.easyTrip.Util.Travel;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IntentionExtraKeys {
 
 	private static final String LOG_TAG = "Custom";
 
@@ -70,9 +71,19 @@ public class MainActivity extends AppCompatActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (requestCode) {
+			case INTENTION_CREATE_TRAVEL:
+				Toast.makeText(this, "Yay! You have created a travel!", Toast.LENGTH_SHORT).show();
+				break;
+		}
+	}
+
 	public void openCreateTravelMenu(View view) {
 		Intent intent = new Intent(this, CitySelector.class);
-		startActivity(intent);
+		startActivityForResult(intent, INTENTION_CREATE_TRAVEL);
 	}
 
 	public void lookup(View view) {
