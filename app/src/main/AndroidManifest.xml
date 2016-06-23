@@ -75,6 +75,9 @@
 				android:exported="false"/
         -->
 		<activity android:name=".TravelSelector">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="com.example.br3athe_in.easyTrip.MainActivity"/>
 		</activity>
 	</application>
 

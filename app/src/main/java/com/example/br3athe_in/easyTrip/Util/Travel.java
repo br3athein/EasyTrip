@@ -11,28 +11,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Travel implements Serializable {
-	public static int totalTravels = 0;
-
+	private int lengthMeters;
 	public ArrayList<City> citiesToVisit;
 	public String title;
-	public int lengthMeters;
 	public ArrayList<String> detailedRouteLegs;
 
-	public float getLengthKms() {
+	float getLengthKms() {
 		return ((float) lengthMeters) / 1000;
-	}
-
-	public Travel(Travel other) {
-		this.citiesToVisit = new ArrayList<>();
-		this.citiesToVisit.addAll(other.citiesToVisit);
-		this.title = other.title;
-		this.lengthMeters = other.lengthMeters;
-		this.detailedRouteLegs = other.detailedRouteLegs;
 	}
 
 	public Travel(String travelTitle, ArrayList<City> toFill,
 								int travelLength, ArrayList<String> encodedRoute) {
-		totalTravels++;
 		citiesToVisit = new ArrayList<>();
 		citiesToVisit.addAll(toFill);
 		title = travelTitle;
@@ -41,7 +30,7 @@ public class Travel implements Serializable {
 		detailedRouteLegs.addAll(encodedRoute);
 	}
 
-	public static Travel deserialize(byte[] serializedTravel) {
+	static Travel deserialize(byte[] serializedTravel) {
 		ByteArrayInputStream bis = new ByteArrayInputStream(serializedTravel);
 		ObjectInput in = null;
 		try {
@@ -61,6 +50,7 @@ public class Travel implements Serializable {
 			}
 		}
 		try {
+			assert in != null;
 			return (Travel) in.readObject();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -68,20 +58,20 @@ public class Travel implements Serializable {
 		}
 	}
 
-	public byte[] serialize() {
+	byte[] serialize() {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ObjectOutput out = null;
 		try {
 			out = new ObjectOutputStream(bos);
 			out.writeObject(this);
-		} catch (IOException e) {
+		} catch (IOException ignored) {
 			// ignore
 		} finally {
 			try {
 				if(out != null) {
 					out.close();
 				}
-			} catch (IOException e) {
+			} catch (IOException ignored) {
 				// gtfo, bloody IOException!
 			}
 			return bos.toByteArray();
@@ -89,6 +79,5 @@ public class Travel implements Serializable {
 	}
 
 	public void optimize(String gMapsKey) {
-		//Abc.optimize();
 	}
 }

@@ -67,5 +67,7 @@
 	<string name="placeholder_city_unknown">Неизвестный город</string>
 	<string name="placeholder_country_unknown">Неизвестная страна</string>
 
+	<string name="travel_underline" formatted="false">%d городов, %.2f км</string>
+
 	<string name="main_create_travel_success">Поздравляем, Вы успешно создали путешествие!</string>
 </resources>

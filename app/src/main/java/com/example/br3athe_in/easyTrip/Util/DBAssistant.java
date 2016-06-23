@@ -10,6 +10,8 @@ import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.example.br3athe_in.easyTrip.R;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -77,9 +79,13 @@ public class DBAssistant extends SQLiteOpenHelper implements BaseColumns, DBKeys
 
 			do {
 				int extractId = cursor.getColumnIndex(KEY_VAL);
-				Log.d(LOG_TAG, "Attempts to get BLOB from column " + cursor.getColumnName(extractId) + "..."); // логи? да похуй вообще. Конкретно в этом месте код будет ровно на сто восемьдесят шесть символов превышать максимально допустимую длину строки кода, разрешённую гайдлайнами Google.
+				Log.d(
+						LOG_TAG, "Attempts to get BLOB from column " + cursor.getColumnName(extractId) + "...");
 				byte[] serializedTravel = cursor.getBlob(extractId);
-				Log.d(LOG_TAG, "BLOB extraction executed, having length " + serializedTravel.length + ". Deserializing...");
+				Log.d(
+						LOG_TAG,
+						"BLOB extraction executed, having length " + serializedTravel.length +
+								". Deserializing...");
 				content.add(Travel.deserialize(serializedTravel));
 				idOut.add(cursor.getInt(cursor.getColumnIndex(BaseColumns._ID)));
 				Log.d(LOG_TAG, "Deserializing done, BLOB  successfully casted to Travel.");
@@ -99,14 +105,17 @@ public class DBAssistant extends SQLiteOpenHelper implements BaseColumns, DBKeys
 		}
 	}
 
-	public ArrayList<HashMap<String, String>> extractFillContent(ArrayList<Travel> travels) {
+	public ArrayList<HashMap<String, String>> extractFillContent(ArrayList<Travel> travels, Context context) {
 		ArrayList<HashMap<String, String>> result = new ArrayList<>();
 
 		for(Travel t : travels) {
-			HashMap<String, String> dummy = new HashMap<>();
-			dummy.put(KEY_NAME, t.title);
-			dummy.put(KEY_VAL, t.getLengthKms() + " km");
-			result.add(dummy);
+			HashMap<String, String> currentTravel = new HashMap<>();
+			currentTravel.put(KEY_NAME, t.title);
+			currentTravel.put(KEY_VAL,
+					String.format(
+							context.getString(
+									R.string.travel_underline), t.citiesToVisit.size(), t.getLengthKms()));
+			result.add(currentTravel);
 		}
 		return result;
 	}

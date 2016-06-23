@@ -296,7 +296,9 @@ public class WorldMap extends FragmentActivity implements OnMapReadyCallback, In
 	}
 
 	private void scenario_drawRoute() {
-		initAgain((ArrayList<City>) getIntent().getExtras().get(EXTRA_CITIES_TO_VISIT), 0);
+		int focusToId = getIntent().getIntExtra(EXTRA_CITY_TO_FOCUS, 0);
+		initAgain((ArrayList<City>) getIntent().getExtras().get(EXTRA_CITIES_TO_VISIT), focusToId);
+
 		ArrayList<Polyline> pops = new ArrayList<>();
 		for(String cs : (ArrayList<String>) getIntent().getExtras().get(EXTRA_ENCODED_POLYLINE)) {
 			pops.add(mMap.addPolyline(decodePoly(cs)));

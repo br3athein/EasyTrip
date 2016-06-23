@@ -34,6 +34,11 @@ public final class City implements Serializable {
 		this.cityName = cityName;
 	}
 
+	@Override
+	public String toString() {
+		return cityName + ", " + countryName;
+	}
+
 	public void denumerate() {
 		Pattern p = Pattern.compile("^\\d+ - (.*)");
 		Matcher m = p.matcher(cityName);

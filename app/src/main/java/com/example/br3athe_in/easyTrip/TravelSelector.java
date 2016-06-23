@@ -12,11 +12,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.example.br3athe_in.easyTrip.Util.ActionKeys;
+import com.example.br3athe_in.easyTrip.Util.City;
 import com.example.br3athe_in.easyTrip.Util.DBAssistant;
 import com.example.br3athe_in.easyTrip.Util.DBKeys;
 import com.example.br3athe_in.easyTrip.Util.IntentionExtraKeys;
@@ -55,7 +57,7 @@ public class TravelSelector extends AppCompatActivity implements DBKeys, ActionK
 
 	private void initializeFields() {
 		syncTravels = new DBAssistant(this).readTravels(syncTravelIds);
-		syncFillContent = new DBAssistant(this).extractFillContent(syncTravels);
+		syncFillContent = new DBAssistant(this).extractFillContent(syncTravels, this);
 	}
 
 	private void reloadContent(ArrayList<HashMap<String, String>> to) {
@@ -72,11 +74,20 @@ public class TravelSelector extends AppCompatActivity implements DBKeys, ActionK
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
+		switch (v.getId()) {
+			case R.id.lvAvailableTravels:
 
-		menu.setHeaderTitle(R.string.tslctr_context_title);
-		menu.add(Menu.NONE, ACTION_QUERY_TRAVEL, 1, R.string.tslctr_query_travel);
-		menu.add(Menu.NONE, ACTION_REDRAW_ROUTE, 2, R.string.tslctr_redraw_route);
-		menu.add(Menu.NONE, ACTION_REMOVE_TRAVEL, 3, R.string.tslctr_remove_travel);
+				menu.setHeaderTitle(R.string.tslctr_context_title);
+				menu.add(Menu.NONE, ACTION_QUERY_TRAVEL, 1, R.string.tslctr_query_travel);
+				menu.add(Menu.NONE, ACTION_REDRAW_ROUTE, 2, R.string.tslctr_redraw_route);
+				menu.add(Menu.NONE, ACTION_REMOVE_TRAVEL, 3, R.string.tslctr_remove_travel);
+				break;
+			default:
+				// doesn't act
+				menu.add(Menu.NONE, ACTION_SHOW_ON_MAP, 1, R.string.cslctr_cntxt_show_map);
+				menu.add(Menu.NONE, ACTION_REQUEST_INFO, 2, R.string.cslctr_cntxt_request_info);
+				menu.add(Menu.NONE, ACTION_SHOW_NOTES, 3, R.string.cslctr_cntxt_edit_notes);
+		}
 	}
 
 	@Override
@@ -92,6 +103,7 @@ public class TravelSelector extends AppCompatActivity implements DBKeys, ActionK
 				break;
 			case ACTION_REMOVE_TRAVEL:
 				removeTravel(selectedPosition);
+				break;
 		}
 		return super.onContextItemSelected(item);
 	}
@@ -109,6 +121,25 @@ public class TravelSelector extends AppCompatActivity implements DBKeys, ActionK
 	private void queryTravel(int selectedPosition) {
 		Log.d(LOG_TAG, "NO WARNINGS BRO THE CODE IS GOD DONUT CLEAR " +
 				"btw, selectedPosition = " + selectedPosition);
+
+		ListView cityLv = new ListView(this);
+		ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1);
+
+		Travel cTravel = syncTravels.get(selectedPosition);
+		ArrayList<City> cCities = cTravel.citiesToVisit;
+
+		for(City c : cCities) {
+			adapter.add(c);
+		}
+
+		cityLv.setAdapter(adapter);
+		registerForContextMenu(cityLv);
+
+		new AlertDialog.Builder(this)
+				.setView(cityLv)
+				.setMessage("Выберите город")
+				.setNeutralButton("Вернуться", null)
+				.show();
 	}
 
 	private void removeTravel(final int selectedPosition) {
@@ -161,6 +192,7 @@ public class TravelSelector extends AppCompatActivity implements DBKeys, ActionK
 					}
 			);
 		} else {
+			assert title != null;
 			title.setText(R.string.tslctr_hints);
 			title.setOnClickListener(null);
 		}
